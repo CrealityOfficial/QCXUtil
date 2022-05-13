@@ -1,4 +1,4 @@
-#include "vec2qvector.h"
+#include "conv.h"
 
 namespace qcxutil
 {
@@ -13,5 +13,18 @@ namespace qcxutil
 		for (const trimesh::vec3& vertex : vertices)
 			results.append(vec2qvector(vertex));
 		return results;
+	}
+
+	QMatrix4x4 xform2QMatrix(const trimesh::fxform& xf)
+	{
+		QMatrix4x4 m;
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				m(i, j) = xf(i, j);
+			}
+		}
+		return m;
 	}
 }
