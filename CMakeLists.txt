@@ -6,6 +6,8 @@ set(SRCS qcxutil/interface.h
 		 qcxutil/qrcode/qrcode.cpp
 		 qcxutil/trimesh2/conv.h
 		 qcxutil/trimesh2/conv.cpp
+		 qcxutil/xml/xmlutil.h
+		 qcxutil/xml/xmlutil.cpp
 		 )
 		 
 set(LIBS Qt5::Core Qt5::Gui qrlib trimesh2)
