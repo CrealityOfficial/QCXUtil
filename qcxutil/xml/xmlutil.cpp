@@ -1,4 +1,5 @@
 #include "xmlutil.h"
+#include <QtCore/QFile>
 
 namespace qcxutil
 {
@@ -180,5 +181,44 @@ namespace qcxutil
 		writer.writeEndElement();
 
 		return 0;
+	}
+
+	bool parseXml(XmlParseFunc func, const QString& fileName)
+	{
+		QFile file(fileName);
+		if (!file.open(QFile::ReadOnly | QFile::Text))
+		{
+			qWarning() << QString("parseXml openFile error.").arg(fileName);
+			return false;
+		}
+
+		QXmlStreamReader xml(&file);
+		while (!xml.atEnd() && !xml.hasError())
+		{
+			QXmlStreamReader::TokenType token = xml.readNext();
+			if (token == QXmlStreamReader::StartDocument)
+			{
+				continue;
+			}
+
+			if (token == QXmlStreamReader::StartElement)
+			{
+				if (func)
+					func(xml);
+
+				xml.readNext();
+			}
+		}
+
+		bool success = true;
+		if (xml.hasError())
+		{
+			qWarning() << QString("parseXml parse [%1] error [%2].").arg(fileName).arg(xml.errorString());
+			success = false;
+		}
+
+		xml.clear();
+		file.close();
+		return success;
 	}
 }
