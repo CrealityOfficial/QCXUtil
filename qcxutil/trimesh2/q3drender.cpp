@@ -78,4 +78,51 @@ namespace qcxutil
 		Qt3DRender::QAttribute* normalAttribute = new Qt3DRender::QAttribute(normalBuffer, Qt3DRender::QAttribute::defaultNormalAttributeName(), Qt3DRender::QAttribute::Float, 3, count);
 		return qtuser_3d::GeometryCreateHelper::create(parent, positionAttribute, normalAttribute);
 	}
+
+	QByteArray createFlagArray(int faceNum)
+	{
+		QByteArray flagBytes;
+		if (faceNum > 0)
+		{
+			flagBytes.resize(faceNum * 3 * sizeof(float));
+			float* fdata = (float*)flagBytes.data();
+			float vd = 1.0f;
+			for (int i = 0; i < faceNum * 3; ++i)
+				*fdata++ = vd;
+		}
+		return flagBytes;
+	}
+
+	QByteArray createPositionArray(trimesh::TriMesh* mesh)
+	{
+		QByteArray positionBytes;
+		if (mesh && mesh->faces.size() > 0)
+		{
+			int facesN = (int)mesh->faces.size();
+#if QT_USE_GLES
+			int index = 0;
+			positionBytes.resize(facesN * 3 * 4 * sizeof(float));
+			trimesh::vec4* position = (trimesh::vec4*)positionBytes.data();
+			for (trimesh::TriMesh::Face face : mesh->faces)
+			{
+				for (int i = 0; i < 3; ++i)
+				{
+					const trimesh::vec3& p = mesh->vertices.at(face[i]);
+					*position++ = trimesh::vec4(p.x, p.y, p.z, (float)index);
+					++index;
+				}
+			}
+#else
+			positionBytes.resize(facesN * 3 * 3 * sizeof(float));
+			trimesh::vec3* position = (trimesh::vec3*)positionBytes.data();
+			for (trimesh::TriMesh::Face face : mesh->faces)
+			{
+				*position++ = mesh->vertices.at(face[0]);
+				*position++ = mesh->vertices.at(face[1]);
+				*position++ = mesh->vertices.at(face[2]);
+			}
+#endif
+		}
+		return positionBytes;
+	}
 }
