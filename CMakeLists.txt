@@ -23,3 +23,7 @@ if( WIN32 AND NOT CYGWIN )
 endif()
 
 __add_common_library(qcxutil)
+
+if( WIN32 AND NOT CYGWIN )
+	target_link_libraries(qcxutil PRIVATE crypt32 ws2_32)
+endif()
