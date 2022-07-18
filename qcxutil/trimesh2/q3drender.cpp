@@ -19,64 +19,15 @@ namespace qcxutil
 
 	Qt3DRender::QGeometry* trimeshes2Geometry(const std::vector<trimesh::TriMesh*>& meshes, Qt3DCore::QNode* parent)
 	{
-		int count = 0;
-		for (trimesh::TriMesh* mesh : meshes)
-			count += (int)mesh->faces.size() * 3;
+		qtuser_3d::AttributeShade positionAttributeShade;
+		qtuser_3d::AttributeShade normalAttributeShade;
 
-		if (count <= 0)
+		trimeshes2AttributeShade(meshes, positionAttributeShade, normalAttributeShade);
+
+		if (positionAttributeShade.count <= 0 || normalAttributeShade.count <= 0)
 			return nullptr;
 
-		QByteArray position;
-#if QT_USE_GLES
-		int vertexStride = 4;
-		position.resize(count * 4 * sizeof(float));
-		trimesh::vec4* vertexData = (trimesh::vec4*)position.data();
-#else
-		int vertexStride = 3;
-		position.resize(count * 3 * sizeof(float));
-		trimesh::vec3* vertexData = (trimesh::vec3*)position.data();
-#endif
-
-		QByteArray normal;
-		normal.resize(count * 3 * sizeof(float));
-		trimesh::vec3* normalData = (trimesh::vec3*)normal.data();
-
-		int index = 0;
-		for (trimesh::TriMesh* mesh : meshes)
-		{
-			for (trimesh::TriMesh::Face& f : mesh->faces)
-			{
-				const trimesh::vec3& v0 = mesh->vertices.at(f[0]);
-				const trimesh::vec3& v1 = mesh->vertices.at(f[1]);
-				const trimesh::vec3& v2 = mesh->vertices.at(f[2]);
-
-				trimesh::vec3 v01 = v1 - v0;
-				trimesh::vec3 v02 = v2 - v0;
-				trimesh::vec3 n = v01 TRICROSS v02;
-				trimesh::normalize(n);
-
-				for (int j = 0; j < 3; ++j)
-				{
-					const trimesh::vec3& v = mesh->vertices.at(f[j]);
-#if QT_USE_GLES
-					vertexData[index] = trimesh::vec4(v.x, v.y, v.z, (float)index);
-#else
-					vertexData[index] = v;
-#endif
-					normalData[index] = n;
-					++index;
-				}
-			}
-		}
-
-		Qt3DRender::QBuffer* positionBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer);
-		Qt3DRender::QBuffer* normalBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer);
-		positionBuffer->setData(position);
-		normalBuffer->setData(normal);
-
-		Qt3DRender::QAttribute* positionAttribute = new Qt3DRender::QAttribute(positionBuffer, Qt3DRender::QAttribute::defaultPositionAttributeName(), Qt3DRender::QAttribute::Float, vertexStride, count);
-		Qt3DRender::QAttribute* normalAttribute = new Qt3DRender::QAttribute(normalBuffer, Qt3DRender::QAttribute::defaultNormalAttributeName(), Qt3DRender::QAttribute::Float, 3, count);
-		return qtuser_3d::GeometryCreateHelper::create(parent, positionAttribute, normalAttribute);
+		return qtuser_3d::GeometryCreateHelper::create(parent, &positionAttributeShade, &normalAttributeShade);
 	}
 
 	QByteArray createFlagArray(int faceNum)
@@ -124,5 +75,72 @@ namespace qcxutil
 #endif
 		}
 		return positionBytes;
+	}
+
+	void trimeshes2AttributeShade(const std::vector<trimesh::TriMesh*>& meshes, qtuser_3d::AttributeShade& position, qtuser_3d::AttributeShade& normal)
+	{
+		int count = 0;
+		for (trimesh::TriMesh* mesh : meshes)
+			count += (int)mesh->faces.size() * 3;
+
+		if (count <= 0)
+			return;
+
+#if QT_USE_GLES
+		position.stride = 4;
+		position.bytes.resize(count * 4 * sizeof(float));
+		trimesh::vec4* vertexData = (trimesh::vec4*)position.data();
+#else
+		position.stride = 3;
+		position.bytes.resize(count * 3 * sizeof(float));
+		trimesh::vec3* vertexData = (trimesh::vec3*)position.bytes.data();
+#endif
+
+		normal.stride = 3;
+		normal.bytes.resize(count * 3 * sizeof(float));
+		trimesh::vec3* normalData = (trimesh::vec3*)normal.bytes.data();
+
+		int index = 0;
+		for (trimesh::TriMesh* mesh : meshes)
+		{
+			for (trimesh::TriMesh::Face& f : mesh->faces)
+			{
+				const trimesh::vec3& v0 = mesh->vertices.at(f[0]);
+				const trimesh::vec3& v1 = mesh->vertices.at(f[1]);
+				const trimesh::vec3& v2 = mesh->vertices.at(f[2]);
+
+				trimesh::vec3 v01 = v1 - v0;
+				trimesh::vec3 v02 = v2 - v0;
+				trimesh::vec3 n = v01 TRICROSS v02;
+				trimesh::normalize(n);
+
+				for (int j = 0; j < 3; ++j)
+				{
+					const trimesh::vec3& v = mesh->vertices.at(f[j]);
+#if QT_USE_GLES
+					vertexData[index] = trimesh::vec4(v.x, v.y, v.z, (float)index);
+#else
+					vertexData[index] = v;
+#endif
+					normalData[index] = n;
+					++index;
+				}
+			}
+		}
+
+		position.count = count;
+		position.name = Qt3DRender::QAttribute::defaultPositionAttributeName();
+		normal.count = count;
+		normal.name = Qt3DRender::QAttribute::defaultNormalAttributeName();
+	}
+
+	void trimesh2AttributeShade(trimesh::TriMesh* mesh, qtuser_3d::AttributeShade& position, qtuser_3d::AttributeShade& normal)
+	{
+		if (!mesh)
+			return;
+
+		std::vector<trimesh::TriMesh*> meshes;
+		meshes.push_back(mesh);
+		return trimeshes2AttributeShade(meshes, position, normal);
 	}
 }

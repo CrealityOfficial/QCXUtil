@@ -6,6 +6,7 @@
 #include "trimesh2/Box.h"
 #include "trimesh2/TriMesh.h"
 
+#include "qtuser3d/geometry/attribute.h"
 #include <Qt3DRender/QGeometry>
 #include <QtCore/QByteArray>
 
@@ -16,6 +17,10 @@ namespace qcxutil
 
 	QCXUTIL_API QByteArray createFlagArray(int faceNum);
 	QCXUTIL_API QByteArray createPositionArray(trimesh::TriMesh* mesh);
+
+	QCXUTIL_API void trimeshes2AttributeShade(const std::vector<trimesh::TriMesh*>& meshes, qtuser_3d::AttributeShade& position, qtuser_3d::AttributeShade& normal);
+	QCXUTIL_API void trimesh2AttributeShade(trimesh::TriMesh* mesh, qtuser_3d::AttributeShade& position, qtuser_3d::AttributeShade& normal);
+
 }
 
 #endif // QCXUTIL_Q3DRENDER_1645445878366_H
