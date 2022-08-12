@@ -1,6 +1,9 @@
 __cc_find(Qrlib)
 __cc_find(Trimesh2)
 __cc_find(OpenSSL)
+__cc_find(Quazip)
+__cc_find(zlib)
+
 __assert_target(qrlib)
 __assert_target(trimesh2)
 
@@ -15,9 +18,13 @@ set(SRCS qcxutil/interface.h
 		 qcxutil/xml/xmlutil.cpp
 		 qcxutil/crypt/cryptfiledevice.h
 		 qcxutil/crypt/cryptfiledevice.cpp
+		 qcxutil/quazip/quazipfile.h
+		 qcxutil/quazip/quazipfile.cpp
 		 )
 		 
-set(LIBS qtuser_core qtuser_3d Qt5::Core Qt5::Gui Qt5::3DRender qrlib trimesh2 ssl crypto)
+set(LIBS qtuser_core qtuser_3d Qt5::Core Qt5::Gui Qt5::3DRender qrlib trimesh2 ssl crypto
+				quazip zlib)
+				
 if( WIN32 AND NOT CYGWIN )
 	set(LIBS ${LIBS} crypt32 ws2_32)
 endif()
