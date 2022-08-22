@@ -2,7 +2,11 @@
 #define QCXUTIL_QUAZIPFILE_1660289457034_H
 #include "qcxutil/interface.h"
 #include <QtCore/QObject>
+#include <QtCore/QIODevice>
 #include <memory>
+#include <functional>
+
+typedef std::function<void(QIODevice& device)> QuazipSubFunc;
 
 class QuaZip;
 namespace qcxutil
@@ -15,7 +19,7 @@ namespace qcxutil
 		virtual ~QuazipFile();
 
 		void open(const QString& fileName);
-		void openSubFile();
+		bool openSubFile(const QString& subFileName, QuazipSubFunc func);
 	protected:
 		std::unique_ptr<QuaZip> m_zip;
 	};
