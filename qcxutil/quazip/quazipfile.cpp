@@ -36,9 +36,9 @@ namespace qcxutil
 		file.setZip(m_zip.get());
 		if (file.open(QIODevice::ReadOnly) && func)
 		{
-			func(file);
+			bool result = func(file);
 			file.close();
-			return true;
+			return result;
 		}
 
 		file.close();

@@ -6,7 +6,7 @@
 #include <memory>
 #include <functional>
 
-typedef std::function<void(QIODevice& device)> QuazipSubFunc;
+typedef std::function<bool(QIODevice& device)> QuazipSubFunc;
 
 class QuaZip;
 namespace qcxutil

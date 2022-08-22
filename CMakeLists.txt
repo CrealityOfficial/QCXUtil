@@ -20,6 +20,8 @@ set(SRCS qcxutil/interface.h
 		 qcxutil/crypt/cryptfiledevice.cpp
 		 qcxutil/quazip/quazipfile.h
 		 qcxutil/quazip/quazipfile.cpp
+		 qcxutil/xml/cxcontent.h
+		 qcxutil/xml/cxcontent.cpp
 		 )
 		 
 set(LIBS qtuser_core qtuser_3d Qt5::Core Qt5::Gui Qt5::3DRender qrlib trimesh2 ssl crypto
