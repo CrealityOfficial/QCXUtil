@@ -48,4 +48,15 @@ namespace qcxutil
 		qtuser_3d::Box3D box3d(bmin, bmax);
 		return box3d;
 	}
+
+	trimesh::vec3 qVector3D2Vec3(const QVector3D& vec)
+	{
+		return trimesh::vec3(vec.x(), vec.y(), vec.z());
+	}
+
+	cxnd::Ray qRay2CRay(const qtuser_3d::Ray& ray)
+	{
+		return cxnd::Ray(qVector3D2Vec3(ray.start),
+			qVector3D2Vec3(ray.dir));
+	}
 }

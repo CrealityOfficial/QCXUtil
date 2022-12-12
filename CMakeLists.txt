@@ -25,7 +25,8 @@ set(SRCS qcxutil/interface.h
 		 )
 		 
 set(LIBS qtuser_core qtuser_3d Qt5::Core Qt5::Gui Qt5::3DRender qrlib trimesh2 ssl crypto
-				quazip zlib)
+		 quazip zlib cxnd
+		)
 				
 if( WIN32 AND NOT CYGWIN )
 	set(LIBS ${LIBS} crypt32 ws2_32)
