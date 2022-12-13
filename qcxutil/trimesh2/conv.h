@@ -4,11 +4,13 @@
 #include "trimesh2/Vec.h"
 #include "trimesh2/XForm.h"
 #include "trimesh2/Box.h"
+#include "trimesh2/quaternion.h"
 #include "cxnd/struct/ray.h"
 
 #include <QtCore/QVector>
 #include <QtGui/QMatrix4x4>
 #include <QtGui/QVector3D>
+#include <QtGui/QQuaternion>
 
 #include "qtuser3d/math/box3d.h"
 #include "qtuser3d/math/ray.h"
@@ -22,7 +24,9 @@ namespace qcxutil
 
 	QCXUTIL_API trimesh::fxform qMatrix2Xform(const QMatrix4x4& matrix);
 	QCXUTIL_API trimesh::vec3 qVector3D2Vec3(const QVector3D& vec);
+	QCXUTIL_API trimesh::box3 qBox32box3(const qtuser_3d::Box3D& box);
 	QCXUTIL_API cxnd::Ray qRay2CRay(const qtuser_3d::Ray& ray);
+	QCXUTIL_API trimesh::quaternion qQuaternion2tQuaternion(const QQuaternion& q);
 }
 
 #endif // QCXUTIL_VEC2QVECTOR_1645445878366_H

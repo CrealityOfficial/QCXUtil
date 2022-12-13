@@ -54,9 +54,23 @@ namespace qcxutil
 		return trimesh::vec3(vec.x(), vec.y(), vec.z());
 	}
 
+	trimesh::box3 qBox32box3(const qtuser_3d::Box3D& box)
+	{
+		trimesh::vec3 bmin = qVector3D2Vec3(box.min);
+		trimesh::vec3 bmax = qVector3D2Vec3(box.max);
+		trimesh::box3 b(bmin, bmax);
+		return b;
+	}
+
 	cxnd::Ray qRay2CRay(const qtuser_3d::Ray& ray)
 	{
 		return cxnd::Ray(qVector3D2Vec3(ray.start),
 			qVector3D2Vec3(ray.dir));
+	}
+
+	trimesh::quaternion qQuaternion2tQuaternion(const QQuaternion& q)
+	{
+		trimesh::quaternion qq(q.x(), q.y(), q.z(), q.scalar());
+		return qq;
 	}
 }
