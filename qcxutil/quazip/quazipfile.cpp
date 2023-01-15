@@ -44,4 +44,32 @@ namespace qcxutil
 		file.close();
 		return false;
 	}
+
+	bool unZipLocalFile(const QString& fileName, const QString& unZipFile)
+	{
+		QByteArray array = fileName.toLocal8Bit();
+		const char* str = array.data();
+		gzFile gzfile = gzopen(str, "rb");
+		if (gzfile == NULL)
+		{
+			return false;
+		}
+		int len = 0;
+		char buf[1024];
+		QByteArray fileArray;
+		while (len = gzread(gzfile, buf, 1024))
+		{
+			fileArray.append((const char*)buf, len);
+		}
+		gzclose(gzfile);
+
+		QFile filePath(unZipFile);
+		QByteArray gzipBateArray = "";
+		if (filePath.open(QIODevice::WriteOnly | QIODevice::Text))
+		{
+			filePath.write(fileArray);
+		}
+
+		return true;
+	}
 }

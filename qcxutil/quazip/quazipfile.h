@@ -23,6 +23,8 @@ namespace qcxutil
 	protected:
 		std::unique_ptr<QuaZip> m_zip;
 	};
+
+	QCXUTIL_API bool unZipLocalFile(const QString& fileName, const QString& unZipFile);
 }
 
 #endif // QCXUTIL_QUAZIPFILE_1660289457034_H
