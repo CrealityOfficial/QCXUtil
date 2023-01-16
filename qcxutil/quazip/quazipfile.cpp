@@ -2,6 +2,8 @@
 #include "quazip/quazip.h"
 #include "quazip/quazipfile.h"
 
+#include <QtCore/QDebug>
+
 namespace qcxutil
 {
 	QuazipFile::QuazipFile(QObject* parent)
@@ -69,6 +71,35 @@ namespace qcxutil
 		{
 			filePath.write(fileArray);
 		}
+
+		return true;
+	}
+
+	bool zipLocalFile(const QString& fileName, const QString& zipFile)
+	{
+		QFile file(fileName);
+		QByteArray gzipBateArray = "";
+		if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+		{
+			int len = 0;
+			char buf[1024];
+			while (len = file.read(buf, 1024))
+			{
+				gzipBateArray.append((const char*)buf, len);
+			}
+		}
+		file.close();
+
+		gzFile gzfp = gzopen(zipFile.toLocal8Bit(), "wb");
+		if (!gzfp)
+		{
+			qDebug() << "gzopen error";
+		}
+		if (gzwrite(gzfp, gzipBateArray, gzipBateArray.size()) > 0)
+		{
+			qDebug() << "gzwrite ok";
+		}
+		gzclose(gzfp);
 
 		return true;
 	}
