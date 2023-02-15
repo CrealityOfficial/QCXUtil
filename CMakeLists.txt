@@ -22,6 +22,7 @@ set(SRCS qcxutil/interface.h
 		 qcxutil/quazip/quazipfile.cpp
 		 qcxutil/xml/cxcontent.h
 		 qcxutil/xml/cxcontent.cpp
+		 qcxutil/util/traitsutil.h
 		 )
 		 
 set(LIBS qtuser_core qtuser_3d Qt5::Core Qt5::Gui Qt5::3DRender qrlib trimesh2 ssl crypto
