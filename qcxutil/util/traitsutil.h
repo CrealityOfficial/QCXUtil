@@ -7,7 +7,7 @@ namespace qcxutil
 {
     // object has name func
 	template<class T>
-	QStringList object2List(const QList<T*>& objects)
+	QStringList objectNames(const QList<T*>& objects)
 	{
         QStringList list;
         for (T* object : objects)
@@ -22,14 +22,30 @@ namespace qcxutil
         return list;
 	}
 
+    template<class T>
+    QStringList objectUniqueNames(const QList<T*>& objects)
+    {
+        QStringList list;
+        for (T* object : objects)
+        {
+            if (!list.contains(object->uniqueName()))
+                list.append(object->uniqueName());
+            else
+            {
+                qWarning() << QString("Dumplicate object name [%1]").arg(object->uniqueName());
+            }
+        }
+        return list;
+    }
+
     // object has name func
     template<class T>
-    T* findObject(const QString& name, const QList<T*>& objects)
+    T* findObject(const QString& uniqueName, const QList<T*>& objects)
     {
         T* result = nullptr;
         for (T* object : objects)
         {
-            if (object->name() == name)
+            if (object->uniqueName() == uniqueName)
             {
                 result = object;
                 break;
