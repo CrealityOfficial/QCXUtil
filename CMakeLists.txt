@@ -14,6 +14,8 @@ set(SRCS qcxutil/interface.h
 		 qcxutil/trimesh2/conv.cpp
 		 qcxutil/trimesh2/q3drender.h
 		 qcxutil/trimesh2/q3drender.cpp
+		 qcxutil/trimesh2/cylindercreator.h
+		 qcxutil/trimesh2/cylindercreator.cpp
 		 qcxutil/xml/xmlutil.h
 		 qcxutil/xml/xmlutil.cpp
 		 qcxutil/crypt/cryptfiledevice.h
