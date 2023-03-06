@@ -30,6 +30,8 @@ namespace qcxutil
 		return qtuser_3d::GeometryCreateHelper::create(parent, &positionAttributeShade, &normalAttributeShade);
 	}
 
+
+	// deprecated
 	QByteArray createFlagArray(int faceNum)
 	{
 		QByteArray flagBytes;
@@ -44,6 +46,8 @@ namespace qcxutil
 		return flagBytes;
 	}
 
+
+	// deprecated
 	QByteArray createPositionArray(trimesh::TriMesh* mesh)
 	{
 		QByteArray positionBytes;
@@ -75,6 +79,72 @@ namespace qcxutil
 #endif
 		}
 		return positionBytes;
+	}
+
+	void trimesh2SupportAttributeInfo(trimesh::TriMesh* mesh, qtuser_3d::SupportAttributeShade& supportChunkAttributeInfo)
+	{
+		if (!mesh)
+			return;
+
+		if (mesh->faces.size() <= 0)
+			return;
+
+		int count = (int)mesh->faces.size() * 3;
+
+		trimesh::vec4* vertex4Data = nullptr;
+		trimesh::vec3* vertex3Data = nullptr;
+
+		if (qtuser_3d::isGles())
+		{
+			supportChunkAttributeInfo.positionAttribute.bytes.resize(count * 4 * sizeof(float));
+			vertex4Data = (trimesh::vec4*)supportChunkAttributeInfo.positionAttribute.bytes.data();
+		}
+		else
+		{
+			supportChunkAttributeInfo.positionAttribute.bytes.resize(count * 3 * sizeof(float));
+			vertex3Data = (trimesh::vec3*)supportChunkAttributeInfo.positionAttribute.bytes.data();
+		}
+
+		supportChunkAttributeInfo.normalAttribute.bytes.resize(count * 3 * sizeof(float));
+		trimesh::vec3* normalData = (trimesh::vec3*)supportChunkAttributeInfo.normalAttribute.bytes.data();
+
+		int index = 0;
+		for (trimesh::TriMesh::Face& f : mesh->faces)
+		{
+			const trimesh::vec3& v0 = mesh->vertices.at(f[0]);
+			const trimesh::vec3& v1 = mesh->vertices.at(f[1]);
+			const trimesh::vec3& v2 = mesh->vertices.at(f[2]);
+
+			trimesh::vec3 v01 = v1 - v0;
+			trimesh::vec3 v02 = v2 - v0;
+			trimesh::vec3 n = v01 TRICROSS v02;
+			trimesh::normalize(n);
+
+			for (int j = 0; j < 3; ++j)
+			{
+				const trimesh::vec3& v = mesh->vertices.at(f[j]);
+				if (qtuser_3d::isGles())
+				{
+					vertex4Data[index] = trimesh::vec4(v.x, v.y, v.z, (float)index);
+				}
+				else
+				{
+					vertex3Data[index] = v;
+				}
+
+				normalData[index] = n;
+				++index;
+			}
+		}
+
+		int faceNum = (int)mesh->faces.size();
+
+		supportChunkAttributeInfo.flagAttribute.bytes.resize(faceNum * 3 * sizeof(float));
+		float* fdata = (float*)supportChunkAttributeInfo.flagAttribute.bytes.data();
+		float vd = 1.0f;
+		for (int i = 0; i < faceNum * 3; ++i)
+			*fdata++ = vd;
+
 	}
 
 	void trimeshes2AttributeShade(const std::vector<trimesh::TriMesh*>& meshes, qtuser_3d::AttributeShade& position, qtuser_3d::AttributeShade& normal)
