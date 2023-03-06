@@ -156,15 +156,20 @@ namespace qcxutil
 		if (count <= 0)
 			return;
 
-#if QT_USE_GLES
-		position.stride = 4;
-		position.bytes.resize(count * 4 * sizeof(float));
-		trimesh::vec4* vertexData = (trimesh::vec4*)position.data();
-#else
-		position.stride = 3;
-		position.bytes.resize(count * 3 * sizeof(float));
-		trimesh::vec3* vertexData = (trimesh::vec3*)position.bytes.data();
-#endif
+		trimesh::vec4* vertex4Data = nullptr;
+		trimesh::vec3* vertex3Data = nullptr;
+		if (qtuser_3d::isGles())
+		{
+			position.stride = 4;
+			position.bytes.resize(count * 4 * sizeof(float));
+			vertex4Data = (trimesh::vec4*)position.bytes.data();
+		}
+		else
+		{
+			position.stride = 3;
+			position.bytes.resize(count * 3 * sizeof(float));
+			vertex3Data = (trimesh::vec3*)position.bytes.data();
+		}
 
 		normal.stride = 3;
 		normal.bytes.resize(count * 3 * sizeof(float));
@@ -187,11 +192,15 @@ namespace qcxutil
 				for (int j = 0; j < 3; ++j)
 				{
 					const trimesh::vec3& v = mesh->vertices.at(f[j]);
-#if QT_USE_GLES
-					vertexData[index] = trimesh::vec4(v.x, v.y, v.z, (float)index);
-#else
-					vertexData[index] = v;
-#endif
+					if (qtuser_3d::isGles())
+					{
+						vertex4Data[index] = trimesh::vec4(v.x, v.y, v.z, (float)index);
+					}
+					else
+					{
+						vertex3Data[index] = v;
+					}
+					
 					normalData[index] = n;
 					++index;
 				}
