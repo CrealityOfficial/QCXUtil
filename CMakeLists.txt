@@ -24,6 +24,8 @@ set(SRCS qcxutil/interface.h
 		 qcxutil/quazip/quazipfile.cpp
 		 qcxutil/xml/cxcontent.h
 		 qcxutil/xml/cxcontent.cpp
+		 qcxutil/trimesh2/trimesh2qgeometryrenderer.h
+		 qcxutil/trimesh2/trimesh2qgeometryrenderer.cpp
 		 qcxutil/util/traitsutil.h
 		 )
 		 
