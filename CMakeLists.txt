@@ -6,6 +6,8 @@ __cc_find(zlib)
 
 __assert_target(qrlib)
 __assert_target(trimesh2)
+__assert_target(quazip)
+__assert_target(ssl)
 
 set(SRCS qcxutil/interface.h
 		 qcxutil/qrcode/qrcode.h
