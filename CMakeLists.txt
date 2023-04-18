@@ -29,11 +29,15 @@ set(SRCS qcxutil/interface.h
 		 qcxutil/trimesh2/trimesh2qgeometryrenderer.h
 		 qcxutil/trimesh2/trimesh2qgeometryrenderer.cpp
 		 qcxutil/util/traitsutil.h
+		 qcxutil/trimesh2/renderprimitive.h
+		 qcxutil/trimesh2/renderprimitive.cpp
 		 )
 		 
 set(LIBS qtuser_core qtuser_3d Qt5::Core Qt5::Gui Qt5::3DRender qrlib trimesh2 ssl crypto
-		 quazip zlib cxnd
+		 quazip zlib mmesh
 		)
+set(ILIBS cxnd)
+
 if(CC_BC_LINUX)
 	list(APPEND LIBS pthread)
 endif()				
