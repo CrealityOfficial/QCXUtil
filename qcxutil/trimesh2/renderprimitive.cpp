@@ -3,6 +3,7 @@
 #include "qtuser3d/geometry/geometrycreatehelper.h"
 
 #include "mmesh/create/createcube.h"
+#include "mmesh/trimesh/algrithm3d.h"
 
 namespace qcxutil
 {
@@ -33,6 +34,36 @@ namespace qcxutil
 		std::vector<trimesh::vec3> lines;
 		mmesh::boxLines(box, lines);
 
+		return createLinesGeometry(lines);
+	}
+
+	Qt3DRender::QGeometry* createGridLines(const GridParameter& parameter)
+	{
+		std::vector<trimesh::vec3> lines;
+		int n = parameter.xNum + parameter.yNum + 2;
+		if (n < 2)
+			return nullptr;
+
+		int nn = 2 * n;
+		lines.reserve(nn);
+
+		float xmax = parameter.delta * (float)parameter.xNum;
+		float ymax = parameter.delta * (float)parameter.yNum;
+		for (int i = 0; i <= parameter.xNum; ++i)
+		{
+			float x = parameter.delta * (float)i;
+			lines.push_back(trimesh::vec3(x, 0.0f, 0.0f));
+			lines.push_back(trimesh::vec3(x, ymax, 0.0f));
+		}
+
+		for (int i = 0; i <= parameter.yNum; ++i)
+		{
+			float y = parameter.delta * (float)i;
+			lines.push_back(trimesh::vec3(0.0f, y, 0.0f));
+			lines.push_back(trimesh::vec3(xmax, y, 0.0f));
+		}
+
+		mmesh::offsetPoints(lines, parameter.offset);
 		return createLinesGeometry(lines);
 	}
 }

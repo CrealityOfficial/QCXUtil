@@ -18,6 +18,15 @@ namespace qcxutil
 
 	QCXUTIL_API Qt3DRender::QGeometry* createCubeLines(const trimesh::box3& box, const CubeParameter& parameter = CubeParameter());
 
+	struct GridParameter
+	{
+		float delta = 20.0f;
+		int xNum = 10;
+		int yNum = 10;
+		trimesh::vec3 offset = trimesh::vec3(0.0f, 0.0f, 0.0f);
+	};
+
+	QCXUTIL_API Qt3DRender::QGeometry* createGridLines(const GridParameter& parameter = GridParameter());
 }
 
 #endif // QCXUTIL_RENDERPRIMITIVE_1681808843406_H
