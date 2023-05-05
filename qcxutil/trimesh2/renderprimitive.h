@@ -8,6 +8,8 @@
 namespace qcxutil
 {
 	QCXUTIL_API Qt3DRender::QGeometry* createLinesGeometry(trimesh::vec3* lines, int num);
+	QCXUTIL_API Qt3DRender::QGeometry* createTrianglesGeometry(trimesh::vec3* positions, int num, trimesh::ivec3* triangle, int tnum);
+
 	QCXUTIL_API Qt3DRender::QGeometry* createLinesGeometry(const std::vector<trimesh::vec3>& lines);
 
 	struct CubeParameter
@@ -17,6 +19,7 @@ namespace qcxutil
 	};
 
 	QCXUTIL_API Qt3DRender::QGeometry* createCubeLines(const trimesh::box3& box, const CubeParameter& parameter = CubeParameter());
+	QCXUTIL_API Qt3DRender::QGeometry* createCubeTriangles(const trimesh::box3& box);
 
 	struct GridParameter
 	{
