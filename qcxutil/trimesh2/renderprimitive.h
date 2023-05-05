@@ -30,6 +30,8 @@ namespace qcxutil
 	};
 
 	QCXUTIL_API Qt3DRender::QGeometry* createGridLines(const GridParameter& parameter = GridParameter());
+
+	QCXUTIL_API Qt3DRender::QGeometry* createIdentityTriangle();
 }
 
 #endif // QCXUTIL_RENDERPRIMITIVE_1681808843406_H

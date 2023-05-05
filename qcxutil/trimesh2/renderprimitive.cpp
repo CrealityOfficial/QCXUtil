@@ -70,12 +70,14 @@ namespace qcxutil
 
 	Qt3DRender::QGeometry* createIndicesGeometry(trimesh::vec3* positions, int num, int* indices, int tnum)
 	{
-		if (num == 0 || !positions || tnum == 0 || !indices)
+		if (num == 0 || !positions)
 			return nullptr;
 
 		Qt3DRender::QAttribute* positionAttribute = qtuser_3d::BufferHelper::CreateVertexAttribute(
 			(const char*)positions, num, 3, Qt3DRender::QAttribute::defaultPositionAttributeName());
-		Qt3DRender::QAttribute* indexAttribute = qtuser_3d::BufferHelper::CreateIndexAttribute((const char*)indices, tnum);
+		Qt3DRender::QAttribute* indexAttribute = nullptr;
+		if(tnum > 0 && indices)
+			indexAttribute = qtuser_3d::BufferHelper::CreateIndexAttribute((const char*)indices, tnum);
 
 		return qtuser_3d::GeometryCreateHelper::create(nullptr, positionAttribute, indexAttribute);
 	}
@@ -187,5 +189,16 @@ namespace qcxutil
 
 		mmesh::offsetPoints(lines, parameter.offset);
 		return createLinesGeometry(lines);
+	}
+
+	Qt3DRender::QGeometry* createIdentityTriangle()
+	{
+		float static_triangle_position[9] = {
+			1.0f, 0.0f, 0.0f,
+			-1.0f, 0.0f, 0.0f,
+			0.0f, -1.0f, 0.0f,
+		};
+
+		return createIndicesGeometry((trimesh::vec3*)static_triangle_position, 3, nullptr, 0);
 	}
 }
