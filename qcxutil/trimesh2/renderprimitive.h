@@ -8,7 +8,7 @@
 namespace qcxutil
 {
 	QCXUTIL_API Qt3DRender::QGeometry* createLinesGeometry(trimesh::vec3* lines, int num);
-	QCXUTIL_API Qt3DRender::QGeometry* createTrianglesGeometry(trimesh::vec3* positions, int num, trimesh::ivec3* triangle, int tnum);
+	QCXUTIL_API Qt3DRender::QGeometry* createIndicesGeometry(trimesh::vec3* positions, int num, int* indices, int tnum);
 
 	QCXUTIL_API Qt3DRender::QGeometry* createLinesGeometry(const std::vector<trimesh::vec3>& lines);
 

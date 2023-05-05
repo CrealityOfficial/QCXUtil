@@ -22,6 +22,41 @@ namespace qcxutil
 		4, 6, 7
 	};
 
+	static unsigned static_box_part_indices[48] = {
+		0, 1,
+		0, 2,
+		0, 3,
+
+		4, 5,
+		4, 6,
+		4, 7,
+
+		8, 9,
+		8, 10,
+		8, 11,
+
+		12, 13,
+		12, 14,
+		12, 15,
+
+		16, 17,
+		16, 18,
+		16, 19,
+
+		20, 21,
+		20, 22,
+		20, 23,
+
+		24, 25,
+		24, 26,
+		24, 27,
+
+		28, 29,
+		28, 30,
+		28, 31
+
+	};
+
 	Qt3DRender::QGeometry* createLinesGeometry(trimesh::vec3* lines, int num)
 	{
 		if (num == 0 || !lines)
@@ -33,14 +68,14 @@ namespace qcxutil
 		return qtuser_3d::GeometryCreateHelper::create(nullptr, positionAttribute);
 	}
 
-	Qt3DRender::QGeometry* createTrianglesGeometry(trimesh::vec3* positions, int num, trimesh::ivec3* triangle, int tnum)
+	Qt3DRender::QGeometry* createIndicesGeometry(trimesh::vec3* positions, int num, int* indices, int tnum)
 	{
-		if (num == 0 || !positions || tnum == 0 || !triangle)
+		if (num == 0 || !positions || tnum == 0 || !indices)
 			return nullptr;
 
 		Qt3DRender::QAttribute* positionAttribute = qtuser_3d::BufferHelper::CreateVertexAttribute(
 			(const char*)positions, num, 3, Qt3DRender::QAttribute::defaultPositionAttributeName());
-		Qt3DRender::QAttribute* indexAttribute = qtuser_3d::BufferHelper::CreateIndexAttribute((const char*)triangle, tnum);
+		Qt3DRender::QAttribute* indexAttribute = qtuser_3d::BufferHelper::CreateIndexAttribute((const char*)indices, tnum);
 
 		return qtuser_3d::GeometryCreateHelper::create(nullptr, positionAttribute, indexAttribute);
 	}
@@ -55,7 +90,47 @@ namespace qcxutil
 	{
 		if (parameter.parts)
 		{
-			return nullptr;
+			auto genDatasFromCorner = [](std::vector<trimesh::vec3>& positions, int pos,
+				const trimesh::vec3& boxsz, const trimesh::vec3& dir)
+			{
+				positions[pos + 1 + 0] = positions[pos] + trimesh::vec3(boxsz.x * dir.x, 0.0f, 0.0f);
+				positions[pos + 1 + 1] = positions[pos] + trimesh::vec3(0.0f, boxsz.y * dir.y, 0.0f);
+				positions[pos + 1 + 2] = positions[pos] + trimesh::vec3(0.0f, 0.0f, boxsz.z * dir.z);
+			};
+
+			std::vector<trimesh::vec3> positions;
+			positions.resize(32);
+
+			trimesh::vec3 bmin = box.min;
+			trimesh::vec3 bmax = box.max;
+
+			trimesh::vec3 boxsz = (bmax - bmin) * (parameter.ratio / 2.0f);
+
+			positions[0] = bmin;
+			genDatasFromCorner(positions, 0, boxsz, trimesh::vec3(1.0f, 1.0f, 1.0f));
+
+			positions[4] = trimesh::vec3(bmax.x, bmin.y, bmin.z);
+			genDatasFromCorner(positions, 4, boxsz, trimesh::vec3(-1.0f, 1.0f, 1.0f));
+
+			positions[8] = trimesh::vec3(bmax.x, bmax.y, bmin.z);
+			genDatasFromCorner(positions, 8, boxsz, trimesh::vec3(-1.0f, -1.0f, 1.0f));
+
+			positions[12] = trimesh::vec3(bmin.x, bmax.y, bmin.z);
+			genDatasFromCorner(positions, 12, boxsz, trimesh::vec3(1.0f, -1.0f, 1.0f));
+
+			positions[16] = trimesh::vec3(bmin.x, bmin.y, bmax.z);
+			genDatasFromCorner(positions, 16, boxsz, trimesh::vec3(1.0f, 1.0f, -1.0f));
+
+			positions[20] = trimesh::vec3(bmax.x, bmin.y, bmax.z);
+			genDatasFromCorner(positions, 20, boxsz, trimesh::vec3(-1.0f, 1.0f, -1.0f));
+
+			positions[24] = bmax;
+			genDatasFromCorner(positions, 24, boxsz, trimesh::vec3(-1.0f, -1.0f, -1.0f));
+
+			positions[28] = trimesh::vec3(bmin.x, bmax.y, bmax.z);
+			genDatasFromCorner(positions, 28, boxsz, trimesh::vec3(1.0f, -1.0f, -1.0f));
+
+			return createIndicesGeometry(positions.data(), 32, (int*)static_box_part_indices, 48);;
 		}
 
 		std::vector<trimesh::vec3> lines;
@@ -81,7 +156,7 @@ namespace qcxutil
 		positions[6] = bmax;
 		positions[7] = trimesh::vec3(bmin.x, bmax.y, bmax.z);
 
-		return createTrianglesGeometry(positions.data(), 24, (trimesh::ivec3*)static_box_triangles_indices, 36);
+		return createIndicesGeometry(positions.data(), 24, (int*)static_box_triangles_indices, 36);
 	}
 
 	Qt3DRender::QGeometry* createGridLines(const GridParameter& parameter)
