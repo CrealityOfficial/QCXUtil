@@ -191,6 +191,86 @@ namespace qcxutil
 		return createLinesGeometry(lines);
 	}
 
+	Qt3DRender::QGeometry* createMidGridLines(const trimesh::box3& box, float gap, float offset)
+	{
+		trimesh::vec3 size = box.size();
+		if (size.x == 0.0f || size.y == 0.0f)
+			return nullptr;
+
+		float minX = box.min.x;
+		float maxX = box.max.x;
+		float minY = box.min.y;
+		float maxY = box.max.y;
+
+		if (maxX - minX <= 0 || maxY - minY <= 0)
+		{
+			return nullptr;
+		}
+
+		std::vector<trimesh::vec3> positions;
+		std::vector<trimesh::vec2> flags;
+
+		float zcoord = 0.0f;
+		float midX = (minX + maxX) / 2.0f;
+		float midY = (minY + maxY) / 2.0f;
+
+		int vertexCount = 0;
+
+		float k = 0.0f;
+		for (float i = midX; i <= maxX; i += gap)
+		{
+			positions.push_back(trimesh::vec3(i, minY, zcoord));
+			positions.push_back(trimesh::vec3(i, maxY, zcoord));
+
+			flags.push_back(trimesh::vec2(k, 1.0f));
+			flags.push_back(trimesh::vec2(k, 1.0f));
+
+			k += gap;
+			vertexCount += 2;
+		}
+		k = gap;
+		for (float i = midX - gap; i >= minX; i -= gap)
+		{
+			positions.push_back(trimesh::vec3(i, minY, zcoord));
+			positions.push_back(trimesh::vec3(i, maxY, zcoord));
+
+			flags.push_back(trimesh::vec2(k, 1.0f));
+			flags.push_back(trimesh::vec2(k, 1.0f));
+
+			k += gap;
+			vertexCount += 2;
+		}
+
+		k = 0;
+		for (float i = midY; i <= maxY; i += gap)
+		{
+			positions.push_back(trimesh::vec3(minX, i, zcoord));
+			positions.push_back(trimesh::vec3(maxX, i, zcoord));
+
+			flags.push_back(trimesh::vec2(1.0f, k));
+			flags.push_back(trimesh::vec2(1.0f, k));
+
+			k += gap;
+			vertexCount += 2;
+		}
+		k = gap;
+		for (float i = midY - gap; i >= minY; i -= gap)
+		{
+			positions.push_back(trimesh::vec3(minX, i, zcoord));
+			positions.push_back(trimesh::vec3(maxX, i, zcoord));
+
+			flags.push_back(trimesh::vec2(1.0f, k));
+			flags.push_back(trimesh::vec2(1.0f, k));
+
+			k += gap;
+			vertexCount += 2;
+		}
+
+		Qt3DRender::QAttribute* positionAttribute = qtuser_3d::BufferHelper::CreateVertexAttribute((const char*)&positions.at(0), qtuser_3d::AttribueSlot::Position, vertexCount);
+		Qt3DRender::QAttribute* flagAttribute = qtuser_3d::BufferHelper::CreateVertexAttribute("vertexFlag", (const char*)&flags.at(0), 2, vertexCount);
+		return qtuser_3d::GeometryCreateHelper::create(nullptr, positionAttribute, flagAttribute);
+	}
+
 	Qt3DRender::QGeometry* createIdentityTriangle()
 	{
 		float static_triangle_position[9] = {

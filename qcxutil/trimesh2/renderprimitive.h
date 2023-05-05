@@ -30,6 +30,7 @@ namespace qcxutil
 	};
 
 	QCXUTIL_API Qt3DRender::QGeometry* createGridLines(const GridParameter& parameter = GridParameter());
+	QCXUTIL_API Qt3DRender::QGeometry* createMidGridLines(const trimesh::box3& box, float gap = 10.0f, float offset = 5.0f);
 
 	QCXUTIL_API Qt3DRender::QGeometry* createIdentityTriangle();
 }
