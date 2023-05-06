@@ -33,6 +33,7 @@ namespace qcxutil
 	QCXUTIL_API Qt3DRender::QGeometry* createMidGridLines(const trimesh::box3& box, float gap = 10.0f, float offset = 5.0f);
 
 	QCXUTIL_API Qt3DRender::QGeometry* createIdentityTriangle();
+	QCXUTIL_API Qt3DRender::QGeometry* createSimpleTriangle(const trimesh::vec3& v1, const trimesh::vec3& v2, const trimesh::vec3& v3);
 }
 
 #endif // QCXUTIL_RENDERPRIMITIVE_1681808843406_H

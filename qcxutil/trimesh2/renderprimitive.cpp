@@ -281,4 +281,13 @@ namespace qcxutil
 
 		return createIndicesGeometry((trimesh::vec3*)static_triangle_position, 3, nullptr, 0);
 	}
+
+	Qt3DRender::QGeometry* createSimpleTriangle(const trimesh::vec3& v1, const trimesh::vec3& v2, const trimesh::vec3& v3)
+	{
+		std::vector<trimesh::vec3> positions;
+		positions.push_back(v1);
+		positions.push_back(v2);
+		positions.push_back(v3);
+		return createIndicesGeometry((trimesh::vec3*)positions.data(), 3, nullptr, 0);
+	}
 }
