@@ -103,4 +103,6 @@ namespace qcxutil
 
 		return true;
 	}
+
+	QString CompressedFileFormat() { return QStringLiteral("gz"); }
 }

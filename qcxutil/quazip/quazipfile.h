@@ -26,6 +26,8 @@ namespace qcxutil
 
 	QCXUTIL_API bool unZipLocalFile(const QString& fileName, const QString& unZipFile);
 	QCXUTIL_API bool zipLocalFile(const QString& fileName, const QString& zipFile);
+
+	QCXUTIL_API QString CompressedFileFormat();
 }
 
 #endif // QCXUTIL_QUAZIPFILE_1660289457034_H
