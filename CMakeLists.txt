@@ -29,12 +29,14 @@ set(SRCS qcxutil/interface.h
 		 qcxutil/trimesh2/trimesh2qgeometryrenderer.h
 		 qcxutil/trimesh2/trimesh2qgeometryrenderer.cpp
 		 qcxutil/util/traitsutil.h
+		 qcxutil/util/nest2djob.h
+		 qcxutil/util/nest2djob.cpp
 		 qcxutil/trimesh2/renderprimitive.h
 		 qcxutil/trimesh2/renderprimitive.cpp
 		 )
 		 
 set(LIBS qtuser_core qtuser_3d Qt5::Core Qt5::Gui Qt5::3DRender qrlib trimesh2 ssl crypto
-		 quazip zlib mmesh
+		 quazip zlib mmesh nestplacer clipper3r
 		)
 set(ILIBS cxnd)
 
