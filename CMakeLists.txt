@@ -3,11 +3,15 @@ __cc_find(Trimesh2)
 __cc_find(OpenSSL)
 __cc_find(Quazip)
 __cc_find(zlib)
+__cc_find(NestPlacer)
+__cc_find(Clipper3r)
 
 __assert_target(qrlib)
 __assert_target(trimesh2)
 __assert_target(quazip)
 __assert_target(ssl)
+__assert_target(nestplacer)
+__assert_target(clipper3r)
 
 set(SRCS qcxutil/interface.h
 		 qcxutil/qrcode/qrcode.h
