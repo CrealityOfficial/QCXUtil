@@ -27,6 +27,7 @@ namespace qcxutil
         std::vector<trimesh::vec3> concave_path(TriMeshPtr globalMesh);
 
         trimesh::quaternion placeRotate(float r);
+        trimesh::quaternion nestRotate();
     protected:
         void calculateXYConvex(TriMeshPtr hull, const trimesh::fxform& rxf = trimesh::fxform::identity(),
             const trimesh::vec3& scale = trimesh::vec3(1.0f, 1.0f, 1.0f));

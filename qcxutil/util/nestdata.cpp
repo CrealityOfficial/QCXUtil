@@ -57,6 +57,11 @@ namespace qcxutil
         return trimesh::quaternion::fromAxisAndAngle(trimesh::vec3(0.0f, 0.0f, 1.0f), (float)(-(r - nestRotation)));
     }
 
+    trimesh::quaternion NestData::nestRotate()
+    {
+        return trimesh::quaternion::fromAxisAndAngle(trimesh::vec3(0.0f, 0.0f, 1.0f), (float)(nestRotation));
+    }
+
     std::vector<trimesh::vec3> NestData::concave_path(TriMeshPtr globalMesh)
     {
         std::vector<trimesh::vec3> lines;
