@@ -2,13 +2,15 @@
 #define CXKERNEL_AUTOLAYOUT_NEST2D_JOB_H
 #include "qcxutil/interface.h"
 #include "qcxutil/trimesh2/conv.h"
+
 #include "qtusercore/module/job.h"
+
+#include "ccglobal/tracer.h"
 
 namespace qcxutil
 {
     struct NestResult
     {
-        int index;
         float x;
         float y;
         float r;
@@ -32,9 +34,14 @@ namespace qcxutil
     public:
         virtual ~PlaceItem() {}
 
+        virtual trimesh::vec3 position() = 0;
         virtual trimesh::box3 globalBox() = 0;
         virtual std::vector<trimesh::vec3> outLine() = 0;
         virtual std::vector<trimesh::vec3> outLine_concave() = 0;
+
+        void setNestResult(const NestResult& _result) { result = _result; }
+    public:
+        NestResult result;
     };
 
     class QCXUTIL_API Nest2DJob : public qtuser_core::Job
@@ -46,6 +53,7 @@ namespace qcxutil
 
         void setBounding(const trimesh::box3& box);
         void setNestType(NestPlaceType type);
+        void setDistance(float distance);
         void setInsertItem(PlaceItem* item);
         void setItems(const QList<PlaceItem*>& items);
     protected:
@@ -55,8 +63,8 @@ namespace qcxutil
         void successed(qtuser_core::Progressor* progressor);                     // invoke from main thread
         void work(qtuser_core::Progressor* progressor);    // invoke from worker thread
 
-        void insert();
-        void layoutAll();
+        void insert(ccglobal::Tracer& tracer);
+        void layoutAll(ccglobal::Tracer& tracer);
     protected:
         trimesh::box3 m_box;
 
@@ -64,8 +72,7 @@ namespace qcxutil
         PlaceItem* m_insert;
 
         NestPlaceType m_nestType;
-
-        QList<NestResult> m_result;
+        float m_distance;
     };
 }
 

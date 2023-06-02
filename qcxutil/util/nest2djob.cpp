@@ -1,7 +1,7 @@
 #include "nest2djob.h"
 
+#include "qtusercore/module/progressortracer.h"
 #include "qcxutil/trimesh2/conv.h"
-
 #include "nestplacer/nestplacer.h"
 
 namespace qcxutil
@@ -10,6 +10,7 @@ namespace qcxutil
         : Job(parent)
         , m_insert(nullptr)
         , m_nestType(NestPlaceType::CENTER_TO_SIDE)
+        , m_distance(10.0f)
     {
 
     }
@@ -27,6 +28,11 @@ namespace qcxutil
     void Nest2DJob::setNestType(NestPlaceType type)
     {
         m_nestType = type;
+    }
+
+    void Nest2DJob::setDistance(float distance)
+    {
+        m_distance = distance;
     }
 
     void Nest2DJob::setInsertItem(PlaceItem* item)
@@ -69,19 +75,53 @@ namespace qcxutil
     {
         std::sort(m_items.begin(), m_items.end(), caseInsensitiveLessThan);
 
+        qtuser_core::ProgressorTracer tracer(progressor);
+        if (!m_insert && m_items.size() == 0)
+        {
+            tracer.failed("Nest2DJob::work invalid input.");
+            return;
+        }
+
         if (m_insert)
-            insert();
+            insert(tracer);
         else
         {
-            layoutAll();
+            layoutAll(tracer);
         }
     }
 
-    void Nest2DJob::insert()
+    void Nest2DJob::insert(ccglobal::Tracer& tracer)
     {
+        std::vector<int> modelIndices;
+        for (int i = 0; i < m_items.size(); i++)
+        {
+            modelIndices.push_back(i);
+        }
+        trimesh::box3 workspaceBox = m_box;
+        std::vector < std::vector<trimesh::vec3>> modelsData;
+        std::vector<trimesh::vec3> transData;
+        for (int m = 0; m < m_items.size(); m++)
+        {
+            std::vector<trimesh::vec3> oItem = m_items.at(m)->outLine();
+            modelsData.push_back(oItem);
+            transData.push_back(m_items.at(m)->position());
+        }
+
+        std::vector<trimesh::vec3> newItem = m_insert->outLine();
+        std::function<void(trimesh::vec3)> modelPositionUpdateFunc_nest = [this](trimesh::vec3 newBoxCenter) {
+            NestResult result;
+            result.x = newBoxCenter.x;
+            result.y = newBoxCenter.y;
+            result.r = newBoxCenter.z;
+            
+            m_insert->setNestResult(result);
+        };
+
+        nestplacer::NestParaFloat para = nestplacer::NestParaFloat(workspaceBox, m_distance, nestplacer::PlaceType(m_nestType), true);
+        nestplacer::NestPlacer::layout_new_item(modelsData, transData, newItem, para, modelPositionUpdateFunc_nest);
     }
 
-    void Nest2DJob::layoutAll()
+    void Nest2DJob::layoutAll(ccglobal::Tracer& tracer)
     {
         if (m_items.size() == 0)
             return;
@@ -106,13 +146,13 @@ namespace qcxutil
 
         std::function<void(int, trimesh::vec3)> modelPositionUpdateFunc_nest = [this](int modelIndex, trimesh::vec3 newBoxCenter) {
             NestResult result;
-            result.x = newBoxCenter.x * NEST_FACTOR;
-            result.y = newBoxCenter.y * NEST_FACTOR;
+            result.x = newBoxCenter.x;
+            result.y = newBoxCenter.y;
             result.r = newBoxCenter.z;
-            result.index = modelIndex;
-            m_result.push_back(result);
+
+            m_items.at(modelIndex)->setNestResult(result);
         };
-        nestplacer::NestParaFloat para = nestplacer::NestParaFloat(workspaceBox, 10.0f, nestplacer::PlaceType(m_nestType), true);
+        nestplacer::NestParaFloat para = nestplacer::NestParaFloat(workspaceBox, m_distance, nestplacer::PlaceType(m_nestType), true);
 
         nestplacer::NestPlacer::layout_all_nest(modelsData, modelIndices, para, modelPositionUpdateFunc_nest);
     }
