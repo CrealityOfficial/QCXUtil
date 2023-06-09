@@ -5,6 +5,6 @@
 
 namespace qcxutil
 {
-    QCXUTIL_API void tessPolygon(const std::vector<std::vector<trimesh::vec3>>& polygons, std::vector<trimesh::vec3>& vertexs);
+    QCXUTIL_API void tessPolygon(const std::vector<std::vector<trimesh::vec2>>& polygons, std::vector<trimesh::vec3>& vertexs);
 }
 #endif // _TESS_UTIL_H_
