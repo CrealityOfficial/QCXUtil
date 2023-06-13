@@ -3,6 +3,7 @@
 #include "qcxutil/interface.h"
 #include "qcxutil/trimesh2/conv.h"
 #include "trimesh2/TriMesh.h"
+#include <memory>
 
 typedef std::shared_ptr<trimesh::TriMesh> TriMeshPtr;
 
