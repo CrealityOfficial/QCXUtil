@@ -35,7 +35,7 @@ namespace qcxutil
 
         for (std::vector<trimesh::vec2> contour : polygons)
         {
-            tessAddContour(tess, 2, contour.front(), sizeof(trimesh::vec2), contour.size());
+            tessAddContour(tess, 2, (const void*)&contour.front(), sizeof(trimesh::vec2), contour.size());
         }
 
         if (!tessTesselate(tess, TESS_WINDING_POSITIVE, TESS_POLYGONS, nvp, 2, 0))
