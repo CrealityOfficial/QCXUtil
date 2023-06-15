@@ -6,8 +6,7 @@
 namespace qcxutil
 {
     NestData::NestData()
-        : nestRotation(0.0)
-        , m_dirty(true)
+        : m_dirty(true)
     {
     }
 
@@ -25,22 +24,16 @@ namespace qcxutil
         return m_dirty;
     }
 
-    std::vector<trimesh::vec3> NestData::path(TriMeshPtr hull, const trimesh::fxform& rxf,
-        const trimesh::vec3& scale, bool simple)
+    std::vector<trimesh::vec3> NestData::path(TriMeshPtr hull, const trimesh::vec3& scale, bool simple)
     {
-        calculateXYConvex(hull, rxf, scale);
+        calculateXYConvex(hull, trimesh::fromQuaterian(rotation), scale);
 
         const std::vector<trimesh::vec3>& p = cPath(simple);
 
         std::vector<trimesh::vec3> result;
-        double sinAng = std::sin(nestRotation * M_PIl / 180.0);
-        double cosAng = std::cos(nestRotation * M_PIl / 180.0);
-
         for (const trimesh::vec3& v : p)
         {
-            double x = v.x * cosAng - v.y * sinAng;
-            double y = v.x * sinAng + v.y * cosAng;
-            result.push_back(trimesh::vec3(x, y, 0.0f));
+            result.push_back(trimesh::vec3(v.x, v.y, 0.0f));
         };
         return result;
     }
@@ -52,14 +45,14 @@ namespace qcxutil
         return convex ? convex->vertices : simples;
     }
 
-    trimesh::quaternion NestData::placeRotate(float r)
+    void NestData::setNestRotation(const trimesh::quaternion& _rotation)
     {
-        return trimesh::quaternion::fromAxisAndAngle(trimesh::vec3(0.0f, 0.0f, 1.0f), (float)(-(r - nestRotation)));
+        rotation = _rotation;
     }
 
-    trimesh::quaternion NestData::nestRotate()
+    trimesh::quaternion NestData::nestRotation()
     {
-        return trimesh::quaternion::fromAxisAndAngle(trimesh::vec3(0.0f, 0.0f, 1.0f), (float)(nestRotation));
+        return rotation;
     }
 
     std::vector<trimesh::vec3> NestData::concave_path(TriMeshPtr globalMesh)
@@ -70,7 +63,7 @@ namespace qcxutil
             globalMesh->need_bbox();
             trimesh::vec3 localPosition = globalMesh->bbox.center();
 
-            double angle = nestRotation;
+            double angle = 0.0; //nestRotation;
             double sinAng = std::sin(-angle * M_PIl / 180.0f);
             double cosAng = std::cos(-angle * M_PIl / 180.0f);
             auto moveAndRotPoint = [sinAng, cosAng](trimesh::vec3 pt, trimesh::vec3 axis)
@@ -107,17 +100,7 @@ namespace qcxutil
         convex = nd->convex;
         simples = nd->simples;
         m_dirty = nd->m_dirty;
-        nestRotation = nd->nestRotation;
-    }
-
-    void NestData::setNestRotation(float angle)
-    {
-        nestRotation = angle;
-    }
-
-    float NestData::getNestRotation()
-    {
-        return nestRotation;
+        rotation = nd->rotation;
     }
 
     void NestData::calculateXYConvex(TriMeshPtr hull, const trimesh::fxform& rxf, const trimesh::vec3& scale)
@@ -144,7 +127,6 @@ namespace qcxutil
             simples.push_back(trimesh::vec3(dmax.x, dmax.y, 0.0f));
             simples.push_back(trimesh::vec3(dmin.x, dmax.y, 0.0f));
             setDirty(false);
-            setNestRotation(0.0);
         }
     }
 }
