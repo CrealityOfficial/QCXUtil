@@ -73,6 +73,7 @@ namespace qcxutil
 
     void Nest2DJob::work(qtuser_core::Progressor* progressor)
     {
+        beforeWork();
         std::sort(m_items.begin(), m_items.end(), caseInsensitiveLessThan);
 
         qtuser_core::ProgressorTracer tracer(progressor);
@@ -155,5 +156,10 @@ namespace qcxutil
         nestplacer::NestParaFloat para = nestplacer::NestParaFloat(workspaceBox, m_distance, nestplacer::PlaceType(m_nestType), true);
 
         nestplacer::NestPlacer::layout_all_nest(modelsData, modelIndices, para, modelPositionUpdateFunc_nest);
+    }
+
+    void Nest2DJob::beforeWork()
+    {
+
     }
 }

@@ -65,6 +65,7 @@ namespace qcxutil
 
         void insert(ccglobal::Tracer& tracer);
         void layoutAll(ccglobal::Tracer& tracer);
+        virtual void beforeWork();
     protected:
         trimesh::box3 m_box;
 
