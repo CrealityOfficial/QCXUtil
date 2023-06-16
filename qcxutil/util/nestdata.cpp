@@ -64,22 +64,10 @@ namespace qcxutil
             globalMesh->need_bbox();
             trimesh::vec3 localPosition = globalMesh->bbox.center();
 
-            double angle = 0.0; //nestRotation;
-            double sinAng = std::sin(-angle * M_PIl / 180.0f);
-            double cosAng = std::cos(-angle * M_PIl / 180.0f);
-            auto moveAndRotPoint = [sinAng, cosAng](trimesh::vec3 pt, trimesh::vec3 axis)
-            {
-                pt = pt - axis;
-                trimesh::vec3 result;
-                result.x = pt.x * cosAng - pt.y * sinAng;
-                result.y = pt.x * sinAng + pt.y * cosAng;
-                return result;
-            };
-
             std::vector<polygonLib::PointF> concaveHull;
             for (const trimesh::point& pt : globalMesh->vertices)
             {
-                trimesh::vec3 pt_rot = moveAndRotPoint(pt, localPosition);
+                trimesh::vec3 pt_rot = rotation * (pt - localPosition);
                 concaveHull.push_back(polygonLib::PointF(pt_rot.x, pt_rot.y));
             }
             concaveHull = polygonLib::PolygonPro::polygonConcaveHull(concaveHull);
