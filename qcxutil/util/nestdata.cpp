@@ -48,6 +48,7 @@ namespace qcxutil
     void NestData::setNestRotation(const trimesh::quaternion& _rotation)
     {
         rotation = _rotation;
+        m_dirty = true;
     }
 
     trimesh::quaternion NestData::nestRotation()
