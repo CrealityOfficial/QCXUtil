@@ -36,7 +36,7 @@ namespace qcxutil
 
         virtual trimesh::vec3 position() = 0;
         virtual trimesh::box3 globalBox() = 0;
-        virtual std::vector<trimesh::vec3> outLine() = 0;
+        virtual std::vector<trimesh::vec3> outLine(bool global = false) = 0;
         virtual std::vector<trimesh::vec3> outLine_concave() = 0;
 
         void setNestResult(const NestResult& _result) { result = _result; }

@@ -103,7 +103,7 @@ namespace qcxutil
         std::vector<trimesh::vec3> transData;
         for (int m = 0; m < m_items.size(); m++)
         {
-            std::vector<trimesh::vec3> oItem = m_items.at(m)->outLine();
+            std::vector<trimesh::vec3> oItem = m_items.at(m)->outLine(true);
             modelsData.push_back(oItem);
             transData.push_back(m_items.at(m)->position());
         }
