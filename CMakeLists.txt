@@ -14,6 +14,7 @@ __assert_target(ssl)
 __assert_target(nestplacer)
 __assert_target(clipper3r)
 __assert_target(libtess2)
+__assert_target(topomesh)
 
 set(SRCS qcxutil/interface.h
 		 qcxutil/qrcode/qrcode.h
@@ -43,10 +44,12 @@ set(SRCS qcxutil/interface.h
 		 qcxutil/util/tessutil.cpp
 		 qcxutil/trimesh2/renderprimitive.h
 		 qcxutil/trimesh2/renderprimitive.cpp
+		 qcxutil/letter/lettermodel.h
+		 qcxutil/letter/lettermodel.cpp
 		 )
 		 
-set(LIBS qtuser_core qtuser_3d Qt5::Core Qt5::Gui Qt5::3DRender qrlib trimesh2 ssl crypto
-		 quazip zlib mmesh nestplacer clipper3r libnest2d qhullWrapper libtess2
+set(LIBS qtuser_core qtuser_3d Qt5::Core Qt5::Gui Qt5::3DRender Qt5::Qml qrlib trimesh2 ssl crypto
+		 quazip zlib mmesh nestplacer clipper3r libnest2d qhullWrapper libtess2 topomesh
 		)
 set(ILIBS cxnd)
 
