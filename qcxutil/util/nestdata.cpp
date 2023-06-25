@@ -38,6 +38,20 @@ namespace qcxutil
         return result;
     }
 
+    std::vector<trimesh::vec3> NestData::qPath(TriMeshPtr hull, const trimesh::quaternion& _rotation, const trimesh::vec3& scale, bool simple)
+    {
+        calculateXYConvex(hull, trimesh::fromQuaterian(_rotation), scale);
+
+        const std::vector<trimesh::vec3>& p = cPath(simple);
+
+        std::vector<trimesh::vec3> result;
+        for (const trimesh::vec3& v : p)
+        {
+            result.push_back(trimesh::vec3(v.x, v.y, 0.0f));
+        };
+        return result;
+    }
+
     const std::vector<trimesh::vec3>& NestData::cPath(bool simple)
     {
         if (simple)

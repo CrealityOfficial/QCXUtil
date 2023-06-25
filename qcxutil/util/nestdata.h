@@ -21,6 +21,8 @@ namespace qcxutil
         bool dirty();
 
         std::vector<trimesh::vec3> path(TriMeshPtr hull, const trimesh::vec3& scale = trimesh::vec3(1.0f, 1.0f, 1.0f), bool simple = false);
+        std::vector<trimesh::vec3> qPath(TriMeshPtr hull, const trimesh::quaternion& rotation, const trimesh::vec3& scale = trimesh::vec3(1.0f, 1.0f, 1.0f), bool simple = false);
+
         const std::vector<trimesh::vec3>& cPath(bool simple = false);
         std::vector<trimesh::vec3> concave_path(TriMeshPtr globalMesh);
 
