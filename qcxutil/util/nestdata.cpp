@@ -2,6 +2,7 @@
 
 #include "qhullWrapper/hull/meshconvex.h"
 #include "polygonLib/polygonLib.h"
+#include "mmesh/util/mnode.h"
 
 namespace qcxutil
 {
@@ -26,7 +27,7 @@ namespace qcxutil
 
     std::vector<trimesh::vec3> NestData::path(TriMeshPtr hull, const trimesh::vec3& scale, bool simple)
     {
-        calculateXYConvex(hull, trimesh::fromQuaterian(rotation), scale);
+        calculateXYConvex(hull, mmesh::fromQuaterian(rotation), scale);
 
         const std::vector<trimesh::vec3>& p = cPath(simple);
 
@@ -40,7 +41,7 @@ namespace qcxutil
 
     std::vector<trimesh::vec3> NestData::qPath(TriMeshPtr hull, const trimesh::quaternion& _rotation, const trimesh::vec3& scale, bool simple)
     {
-        std::vector<trimesh::vec3> p = calculateGlobalXYConvex(hull, trimesh::fromQuaterian(_rotation), scale);
+        std::vector<trimesh::vec3> p = calculateGlobalXYConvex(hull, mmesh::fromQuaterian(_rotation), scale);
 
         std::vector<trimesh::vec3> result;
         for (const trimesh::vec3& v : p)
