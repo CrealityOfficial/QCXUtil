@@ -25,7 +25,7 @@ namespace qcxutil
 
         const std::vector<trimesh::vec3>& cPath(bool simple = false);
         std::vector<trimesh::vec3> debug_path();
-        std::vector<trimesh::vec3> concave_path(TriMeshPtr globalMesh);
+        std::vector<trimesh::vec3> concave_path(TriMeshPtr globalMesh, QVector3D scale);
 
         void setNestRotation(const trimesh::quaternion& rotation);
         trimesh::quaternion nestRotation();

@@ -80,25 +80,22 @@ namespace qcxutil
         return rotation;
     }
 
-    std::vector<trimesh::vec3> NestData::concave_path(TriMeshPtr globalMesh)
+    std::vector<trimesh::vec3> NestData::concave_path(TriMeshPtr globalMesh, QVector3D scalse)
     {
         std::vector<trimesh::vec3> lines;
         if (globalMesh)
         {
-            globalMesh->need_bbox();
-            trimesh::vec3 localPosition = globalMesh->bbox.center();
-
             std::vector<polygonLib::PointF> concaveHull;
             for (const trimesh::point& pt : globalMesh->vertices)
             {
-                trimesh::vec3 pt_rot = rotation * (pt - localPosition);
+                trimesh::vec3 pt_rot = rotation * pt;
                 concaveHull.push_back(polygonLib::PointF(pt_rot.x, pt_rot.y));
             }
             concaveHull = polygonLib::PolygonPro::polygonConcaveHull(concaveHull);
 
             for (const polygonLib::PointF& v : concaveHull)
             {
-                lines.push_back(trimesh::vec3(v.x, v.y, 0.0f));
+                lines.push_back(trimesh::vec3(v.x * scalse.x(), v.y * scalse.y(), 0.0f));
             }
         }
 
