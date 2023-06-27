@@ -42,11 +42,11 @@ namespace qcxutil
 		m_param.concave = outSide;
 	}
 
-	TriMeshPtr LetterModel::_generate(TriMeshPtr mesh, const QList<QObject*>& objectList,
+	TriMeshPtr LetterModel::_generate(TriMeshPtr mesh,
 		const QSize& surfaceSize, const topomesh::SimpleCamera& camera, ccglobal::Tracer* tracer)
 	{
 		std::vector<topomesh::TriPolygons> polygons;
-		generatePolygons(objectList, surfaceSize, polygons);
+		generatePolygons(surfaceSize, polygons);
 
 		bool letterOpState = false;
 		TriMeshPtr result(topomesh::letter(mesh.get(), camera, m_param, polygons, letterOpState, nullptr, tracer));
@@ -59,7 +59,53 @@ namespace qcxutil
 		return result;
 	}
 
-	void LetterModel::generatePolygons(const QList<QObject*>& objectList, const QSize& surfaceSize, std::vector<topomesh::TriPolygons>& outPolygon)
+	void LetterModel::parseQmlData(const QList<QObject*>& objectList)
+	{
+		m_listLetterConfig.clear();
+		for (QObject* object : objectList)
+		{
+			if (!object)
+			{
+				continue;
+			}
+			QVariant tmpDragVariant = QQmlProperty::read(object, "dragType");
+			if (tmpDragVariant.isNull() || !tmpDragVariant.isValid())
+			{
+				qDebug() << "dragType error!";
+				continue;
+			}
+			QSharedPointer<LetterConfigPara> letterParaPtr(new LetterConfigPara());
+			QString dragType = tmpDragVariant.toString();
+			int x = QQmlProperty::read(object, "x").toInt();
+			int y = QQmlProperty::read(object, "y").toInt();
+			int tShapeW = QQmlProperty::read(object, "width").toInt();
+			int tShapeH = QQmlProperty::read(object, "height").toInt();
+			int tRotate = QQmlProperty::read(object, "rotation").toInt();
+			letterParaPtr->dragType = dragType;
+			letterParaPtr->x = x;
+			letterParaPtr->y = y;
+			letterParaPtr->tShapeW = tShapeW;
+			letterParaPtr->tShapeH = tShapeH;
+			letterParaPtr->tRotate = tRotate;
+			if ("text" == dragType)
+			{
+				QString text = QQmlProperty::read(object, "text").toString();
+				QString fontfamily = QQmlProperty::read(object, "fontfamily").toString();
+				QString fontstyle = QQmlProperty::read(object, "fontstyle").toString();
+				int fontsize = QQmlProperty::read(object, "fontsize").toInt();
+
+				letterParaPtr->text = text;
+				letterParaPtr->fontfamily = fontfamily;
+				letterParaPtr->fontstyle = fontstyle;
+				letterParaPtr->fontsize = fontsize;
+			}
+			m_listLetterConfig.push_back(letterParaPtr);
+		}
+
+
+
+	}
+	void LetterModel::generatePolygons( const QSize& surfaceSize, std::vector<topomesh::TriPolygons>& outPolygon)
 	{
 		outPolygon.clear();
 
@@ -86,40 +132,35 @@ namespace qcxutil
 		};
 
 		std::vector<ClipperLibXYZ::Paths> pathses;
-		for (QObject* object : objectList)
+		//for (QObject* object : objectList)
+		for(auto paraPtr : m_listLetterConfig)
 		{
-			if (!object)
+			if (!paraPtr)
 			{
 				continue;
 			}
 
 			QPainterPath painterPath;
 
-			QVariant tmpDragVariant = QQmlProperty::read(object, "dragType");
-			if (tmpDragVariant.isNull() || !tmpDragVariant.isValid())
-			{
-				qDebug() << "dragType error!";
-				continue;
-			}
 
-			QString dragType = tmpDragVariant.toString();
-			int x = QQmlProperty::read(object, "x").toInt();
-			int y = QQmlProperty::read(object, "y").toInt();
-			int tShapeW = QQmlProperty::read(object, "width").toInt();
-			int tShapeH = QQmlProperty::read(object, "height").toInt();
-			int tRotate = QQmlProperty::read(object, "rotation").toInt();
+			QString dragType = paraPtr->dragType;
+			int x = paraPtr->x;
+			int y = paraPtr->y;
+			int tShapeW = paraPtr->tShapeW;
+			int tShapeH = paraPtr->tShapeH;
+			int tRotate = paraPtr->tRotate;
 
 			ClipperLibXYZ::Paths paths;
 			if ("text" == dragType)
 			{
-				QString text = QQmlProperty::read(object, "text").toString();
-				QString fontfamily = QQmlProperty::read(object, "fontfamily").toString();
-				QString fontstyle = QQmlProperty::read(object, "fontstyle").toString();
-				int fontsize = QQmlProperty::read(object, "fontsize").toInt();
+				QString text = paraPtr->text;
+				QString fontfamily = paraPtr->fontfamily;
+				QString fontstyle = paraPtr->fontstyle;
+				int fontsize = paraPtr->fontsize;
 
 				QFont font;
 				font.setFamily(fontfamily);
-				font.setStyleName(fontstyle);
+				//font.setStyleName(fontstyle);
 				font.setPointSize(fontsize);
 
 				QFontMetrics metrics(font);
