@@ -24,12 +24,16 @@ namespace qcxutil
         std::vector<trimesh::vec3> qPath(TriMeshPtr hull, const trimesh::quaternion& rotation, const trimesh::vec3& scale = trimesh::vec3(1.0f, 1.0f, 1.0f), bool simple = false);
 
         const std::vector<trimesh::vec3>& cPath(bool simple = false);
+        std::vector<trimesh::vec3> debug_path();
         std::vector<trimesh::vec3> concave_path(TriMeshPtr globalMesh);
 
         void setNestRotation(const trimesh::quaternion& rotation);
         trimesh::quaternion nestRotation();
     protected:
         void calculateXYConvex(TriMeshPtr hull, const trimesh::fxform& rxf = trimesh::fxform::identity(),
+            const trimesh::vec3& scale = trimesh::vec3(1.0f, 1.0f, 1.0f));
+
+        std::vector<trimesh::vec3> calculateGlobalXYConvex(TriMeshPtr hull, const trimesh::fxform& rxf = trimesh::fxform::identity(),
             const trimesh::vec3& scale = trimesh::vec3(1.0f, 1.0f, 1.0f));
     protected:
         TriMeshPtr convex;

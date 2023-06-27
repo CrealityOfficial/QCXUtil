@@ -40,9 +40,19 @@ namespace qcxutil
 
     std::vector<trimesh::vec3> NestData::qPath(TriMeshPtr hull, const trimesh::quaternion& _rotation, const trimesh::vec3& scale, bool simple)
     {
-        calculateXYConvex(hull, trimesh::fromQuaterian(_rotation), scale);
+        std::vector<trimesh::vec3> p = calculateGlobalXYConvex(hull, trimesh::fromQuaterian(_rotation), scale);
 
-        const std::vector<trimesh::vec3>& p = cPath(simple);
+        std::vector<trimesh::vec3> result;
+        for (const trimesh::vec3& v : p)
+        {
+            result.push_back(trimesh::vec3(v.x, v.y, 0.0f));
+        };
+        return result;
+    }
+
+    std::vector<trimesh::vec3> NestData::debug_path()
+    {
+        const std::vector<trimesh::vec3>& p = cPath(false);
 
         std::vector<trimesh::vec3> result;
         for (const trimesh::vec3& v : p)
@@ -104,6 +114,22 @@ namespace qcxutil
         simples = nd->simples;
         m_dirty = nd->m_dirty;
         rotation = nd->rotation;
+    }
+
+    std::vector<trimesh::vec3> NestData::calculateGlobalXYConvex(TriMeshPtr hull, const trimesh::fxform& rxf, const trimesh::vec3& scale)
+    {
+        std::vector<trimesh::vec3> convex2D;
+        if (hull)
+        {
+            TriMeshPtr mesh(qhullWrapper::convex2DPolygon(hull.get(), rxf, nullptr));
+
+            for (trimesh::vec3& v : mesh->vertices)
+                v *= scale;
+
+            convex2D = mesh->vertices;
+        }
+
+        return convex2D;
     }
 
     void NestData::calculateXYConvex(TriMeshPtr hull, const trimesh::fxform& rxf, const trimesh::vec3& scale)
