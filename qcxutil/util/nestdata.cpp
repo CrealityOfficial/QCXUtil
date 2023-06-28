@@ -81,13 +81,13 @@ namespace qcxutil
         return rotation;
     }
 
-    std::vector<trimesh::vec3> NestData::concave_path(TriMeshPtr globalMesh, const trimesh::vec3 scalse)
+    std::vector<trimesh::vec3> NestData::concave_path(TriMeshPtr mesh, const trimesh::vec3 scalse)
     {
         std::vector<trimesh::vec3> lines;
-        if (globalMesh)
+        if (mesh)
         {
             std::vector<polygonLib::PointF> concaveHull;
-            for (const trimesh::point& pt : globalMesh->vertices)
+            for (const trimesh::point& pt : mesh->vertices)
             {
                 trimesh::vec3 pt_rot = rotation * pt;
                 concaveHull.push_back(polygonLib::PointF(pt_rot.x, pt_rot.y));

@@ -153,6 +153,8 @@ namespace qcxutil
 
             m_items.at(modelIndex)->setNestResult(result);
         };
+        if (nestplacer::PlaceType(m_nestType) == nestplacer::PlaceType::CONCAVE)
+            m_distance = 3.0;
         nestplacer::NestParaFloat para = nestplacer::NestParaFloat(workspaceBox, m_distance, nestplacer::PlaceType(m_nestType), true);
 
         nestplacer::NestPlacer::layout_all_nest(modelsData, modelIndices, para, modelPositionUpdateFunc_nest);
