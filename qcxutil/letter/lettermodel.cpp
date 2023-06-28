@@ -8,6 +8,7 @@
 
 #include "mmesh/trimesh/algrithm3d.h"
 #include "topomesh/alg/letter.h"
+#include "clipperxyz/clipper.hpp"
 
 namespace qcxutil
 {
