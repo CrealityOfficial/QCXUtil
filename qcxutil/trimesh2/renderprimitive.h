@@ -34,6 +34,7 @@ namespace qcxutil
 
 	QCXUTIL_API Qt3DRender::QGeometry* createIdentityTriangle();
 	QCXUTIL_API Qt3DRender::QGeometry* createSimpleTriangle(const trimesh::vec3& v1, const trimesh::vec3& v2, const trimesh::vec3& v3);
+	QCXUTIL_API Qt3DRender::QGeometry* createSimpleQuad();
 }
 
 #endif // QCXUTIL_RENDERPRIMITIVE_1681808843406_H

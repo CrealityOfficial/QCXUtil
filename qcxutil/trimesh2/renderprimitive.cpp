@@ -290,4 +290,83 @@ namespace qcxutil
 		positions.push_back(v3);
 		return createIndicesGeometry((trimesh::vec3*)positions.data(), 3, nullptr, 0);
 	}
+
+	Qt3DRender::QGeometry* createSimpleQuad()
+	{
+		//	float quadVertices[] = {   // Vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+		//// Positions   // TexCoords
+		//-1.0f,  1.0f,  0.0f, 1.0f,
+		//-1.0f, -1.0f,  0.0f, 0.0f,
+		// 1.0f, -1.0f,  1.0f, 0.0f,
+
+		//-1.0f,  1.0f,  0.0f, 1.0f,
+		// 1.0f, -1.0f,  1.0f, 0.0f,
+		// 1.0f,  1.0f,  1.0f, 1.0f
+		//	};
+
+		float quadVertices[] = {
+			// Positions  
+			-1.0f,  1.0f, 0.0f,
+			-1.0f, -1.0f, 0.0f,
+			1.0f, -1.0f,  0.0f,
+
+			-1.0f,  1.0f,  0.0f,
+			1.0f,  -1.0f,  0.0f,
+			1.0f,  1.0f,   0.0f,
+		};
+
+		//float quadVertices[] = {
+		//	// Positions  
+		//	-0.5f,  0.5f, 0.0f,
+		//	-0.5f, -0.5f, 0.0f,
+		//	0.5f, -0.5f,  0.0f,
+
+		//	-0.5f,  0.5f,  0.0f,
+		//	0.5f,  -0.5f,  0.0f,
+		//	0.5f,  0.5f,   0.0f,
+		//};
+
+		//float quadTexcoords[] = {
+		//	// TexCoords  
+		//	0.0f,  1.0f,
+		//	0.0f,  0.0f,
+		//	1.0f,  0.0f,
+
+		//	0.0f,  1.0f,
+		//	1.0f,  0.0f,
+		//	1.0f,  1.0f,
+		//};
+
+		float quadTexcoords[] = {
+			// TexCoords  
+			0.0f,  995.0f,
+			0.0f,  0.0f,
+			1920.0f,  0.0f,
+
+			0.0f,  995.0f,
+			1920.0f,  0.0f,
+			1920.0f,  995.0f,
+		};
+
+		QByteArray posArray;
+		int lenPos = sizeof(quadVertices);
+		posArray.resize(lenPos);
+		memcpy(posArray.data(), &quadVertices, lenPos);
+		Qt3DRender::QBuffer* positionBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer);
+		positionBuffer->setData(posArray);
+
+		Qt3DRender::QAttribute* positionAttribute = new Qt3DRender::QAttribute(positionBuffer, Qt3DRender::QAttribute::defaultPositionAttributeName(), Qt3DRender::QAttribute::Float, 3, 6);
+
+		Qt3DRender::QAttribute* texcoordAttribute = nullptr;
+		Qt3DRender::QBuffer* texcoordBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer);
+		QByteArray texcoordArray;
+		int lenTex = sizeof(quadTexcoords);
+		texcoordArray.resize(lenTex);
+		memcpy(texcoordArray.data(), &quadTexcoords, lenTex);
+		texcoordBuffer->setData(texcoordArray);
+		texcoordAttribute = new Qt3DRender::QAttribute(texcoordBuffer, Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName(), Qt3DRender::QAttribute::Float, 2, 6);
+
+		return qtuser_3d::GeometryCreateHelper::create(nullptr, positionAttribute, texcoordAttribute);
+
+	}
 }
