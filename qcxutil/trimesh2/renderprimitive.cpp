@@ -367,6 +367,10 @@ namespace qcxutil
 		texcoordAttribute = new Qt3DRender::QAttribute(texcoordBuffer, Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName(), Qt3DRender::QAttribute::Float, 2, 6);
 
 		return qtuser_3d::GeometryCreateHelper::create(nullptr, positionAttribute, texcoordAttribute);
+	}
 
+	Qt3DRender::QGeometry* createTriangles(const std::vector<trimesh::vec3>& tris)
+	{
+		return createIndicesGeometry((trimesh::vec3*)tris.data(), (int)tris.size(), nullptr, 0);
 	}
 }
