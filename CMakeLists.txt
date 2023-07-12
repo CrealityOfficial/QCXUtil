@@ -6,8 +6,8 @@ __cc_find(zlib)
 __cc_find(NestPlacer)
 __cc_find(Clipper3r)
 __cc_find(libtess2)
-__cc_find(poissonRecon)
 __cc_find(gcodeparase)
+__cc_find(poissonRecon)
 
 __assert_target(qrlib)
 __assert_target(trimesh2)
@@ -17,8 +17,8 @@ __assert_target(nestplacer)
 __assert_target(clipper3r)
 __assert_target(libtess2)
 __assert_target(topomesh)
-__assert_target(poissonRecon)
 __assert_target(gcodeparase)
+__assert_target(poissonRecon)
 
 set(SRCS qcxutil/interface.h
 		 qcxutil/qrcode/qrcode.h
