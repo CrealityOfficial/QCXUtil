@@ -20,10 +20,15 @@ namespace qcxutil
 		QByteArray& positionByteArray = data.position;
 		QByteArray& normalByteArray = data.normal;
 		QByteArray& texcoordArray = data.texcoord;
+		QByteArray& colorArray = data.color;
 
 		positionByteArray.resize(count * 3 * sizeof(float));
 		normalByteArray.resize(count * 3 * sizeof(float));
 		texcoordArray.resize(count * 2 * sizeof(float));
+
+		bool hasColor = mesh->colors.size() > 0;
+		if (hasColor)
+			colorArray.resize(count * 3 * sizeof(float));
 
 		if (count == (int)mesh->vertices.size())
 		{
@@ -39,9 +44,19 @@ namespace qcxutil
 			trimesh::vec3* vertexData = (trimesh::vec3*)positionByteArray.data();
 			trimesh::vec3* normalData = (trimesh::vec3*)normalByteArray.data();
 			trimesh::vec2* texcoordData = (trimesh::vec2*)texcoordArray.data();
+			trimesh::vec3* colorData = (trimesh::vec3*)colorArray.data();
 
 			for (int i = 0; i < fcount; ++i)
 			{
+				if (hasColor)
+				{
+					trimesh::Color c = mesh->colors.at(i);
+					for (int j = 0; j < 3; ++j)
+					{
+						colorData[i * 3 + j] = c;
+					}
+				}
+
 				trimesh::TriMesh::Face& f = mesh->faces.at(i);
 				for (int j = 0; j < 3; ++j)
 				{
