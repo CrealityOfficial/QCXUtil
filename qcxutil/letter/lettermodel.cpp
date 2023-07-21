@@ -1,6 +1,7 @@
 #include "lettermodel.h"
 
 #include <QtGui/QPainter>
+#include <QPainterPath>
 #include <QtCore/QFile>
 #include <QtQml/QQmlProperty>
 #include <QtCore/QDebug>
