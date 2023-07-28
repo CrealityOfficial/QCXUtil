@@ -27,6 +27,7 @@ namespace qcxutil
 	QCXUTIL_API trimesh::box3 qBox32box3(const qtuser_3d::Box3D& box);
 	QCXUTIL_API cxnd::Ray qRay2CRay(const qtuser_3d::Ray& ray);
 	QCXUTIL_API trimesh::quaternion qQuaternion2tQuaternion(const QQuaternion& q);
+	QCXUTIL_API QQuaternion tqua2qqua(trimesh::quaternion q);
 }
 
 #endif // QCXUTIL_VEC2QVECTOR_1645445878366_H

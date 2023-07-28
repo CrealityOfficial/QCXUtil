@@ -70,7 +70,12 @@ namespace qcxutil
 
 	trimesh::quaternion qQuaternion2tQuaternion(const QQuaternion& q)
 	{
-		trimesh::quaternion qq(q.x(), q.y(), q.z(), q.scalar());
+		trimesh::quaternion qq(q.scalar(), q.x(), q.y(), q.z());
 		return qq;
+	}
+
+	QQuaternion tqua2qqua(trimesh::quaternion q)
+	{
+		return QQuaternion(q.wp, q.xp, q.yp, q.zp);
 	}
 }
