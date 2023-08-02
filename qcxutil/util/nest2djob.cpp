@@ -11,6 +11,7 @@ namespace qcxutil
         , m_insert(nullptr)
         , m_nestType(NestPlaceType::CENTER_TO_SIDE)
         , m_distance(10.0f)
+        , m_layoutNeedRotate(true)
     {
 
     }
@@ -43,6 +44,11 @@ namespace qcxutil
     void Nest2DJob::setItems(const QList<PlaceItem*>& items)
     {
         m_items = items;
+    }
+
+    void Nest2DJob::setLayoutNeedRotate(bool bNeedRotate)
+    {
+        m_layoutNeedRotate = bNeedRotate;
     }
 
     QString Nest2DJob::name()
@@ -118,7 +124,12 @@ namespace qcxutil
             m_insert->setNestResult(result);
         };
 
-        nestplacer::NestParaFloat para = nestplacer::NestParaFloat(workspaceBox, m_distance, nestplacer::PlaceType(m_nestType), true);
+        nestplacer::NestParaFloat para;
+        if(m_layoutNeedRotate)
+            para = nestplacer::NestParaFloat(workspaceBox, m_distance, nestplacer::PlaceType(m_nestType), true);
+        else
+            para = nestplacer::NestParaFloat(workspaceBox, m_distance, nestplacer::PlaceType(m_nestType), true, 1);
+
         nestplacer::NestPlacer::layout_new_item(modelsData, transData, newItem, para, modelPositionUpdateFunc_nest);
     }
 
@@ -155,7 +166,12 @@ namespace qcxutil
         };
         if (nestplacer::PlaceType(m_nestType) == nestplacer::PlaceType::CONCAVE)
             m_distance = 3.0;
-        nestplacer::NestParaFloat para = nestplacer::NestParaFloat(workspaceBox, m_distance, nestplacer::PlaceType(m_nestType), true);
+
+        nestplacer::NestParaFloat para;
+        if(m_layoutNeedRotate)
+            para = nestplacer::NestParaFloat(workspaceBox, m_distance, nestplacer::PlaceType(m_nestType), true);
+        else
+            para = nestplacer::NestParaFloat(workspaceBox, m_distance, nestplacer::PlaceType(m_nestType), true, 1);
 
         nestplacer::NestPlacer::layout_all_nest(modelsData, modelIndices, para, modelPositionUpdateFunc_nest);
     }

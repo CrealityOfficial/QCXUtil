@@ -56,6 +56,7 @@ namespace qcxutil
         void setDistance(float distance);
         void setInsertItem(PlaceItem* item);
         void setItems(const QList<PlaceItem*>& items);
+        void setLayoutNeedRotate(bool bNeedRotate);
     protected:
         QString name();
         QString description();
@@ -74,6 +75,7 @@ namespace qcxutil
 
         NestPlaceType m_nestType;
         float m_distance;
+        bool m_layoutNeedRotate;
     };
 }
 
