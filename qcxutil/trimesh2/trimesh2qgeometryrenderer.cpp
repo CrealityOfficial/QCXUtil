@@ -24,7 +24,10 @@ namespace qcxutil
 
 		positionByteArray.resize(count * 3 * sizeof(float));
 		normalByteArray.resize(count * 3 * sizeof(float));
-		texcoordArray.resize(count * 2 * sizeof(float));
+
+		bool hasTex = mesh->faceUVs.size() > 0;
+		if(hasTex)
+			texcoordArray.resize(count * 2 * sizeof(float));
 
 		bool hasColor = mesh->colors.size() > 0;
 		if (hasColor)
@@ -73,7 +76,7 @@ namespace qcxutil
 					normalData[i * 3 + j] = n;
 				}
 
-				if (texcoordArray.size())
+				if (texcoordArray.size() && hasTex)
 				{
 					if (i >= mesh->faceUVs.size()
 						|| i >= mesh->textureIDs.size())
