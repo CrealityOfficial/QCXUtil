@@ -373,4 +373,9 @@ namespace qcxutil
 	{
 		return createIndicesGeometry((trimesh::vec3*)tris.data(), (int)tris.size(), nullptr, 0);
 	}
+
+	Qt3DRender::QGeometry* createPoints(const std::vector<trimesh::vec3>& points)
+	{
+		return createIndicesGeometry((trimesh::vec3*)points.data(), (int)points.size(), nullptr, 0);
+	}
 }

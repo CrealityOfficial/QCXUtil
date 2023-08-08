@@ -37,6 +37,8 @@ namespace qcxutil
 
 	QCXUTIL_API Qt3DRender::QGeometry* createSimpleQuad();
 	QCXUTIL_API Qt3DRender::QGeometry* createTriangles(const std::vector<trimesh::vec3>& tris);
+
+	QCXUTIL_API Qt3DRender::QGeometry* createPoints(const std::vector<trimesh::vec3>& points);
 }
 
 #endif // QCXUTIL_RENDERPRIMITIVE_1681808843406_H
