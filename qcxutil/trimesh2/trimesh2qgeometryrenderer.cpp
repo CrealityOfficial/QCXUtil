@@ -25,7 +25,7 @@ namespace qcxutil
 		positionByteArray.resize(count * 3 * sizeof(float));
 		normalByteArray.resize(count * 3 * sizeof(float));
 
-		bool hasTex = mesh->faceUVs.size() > 0;
+		bool hasTex = true;
 		if(hasTex)
 			texcoordArray.resize(count * 2 * sizeof(float));
 
