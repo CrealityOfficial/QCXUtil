@@ -117,8 +117,8 @@ namespace qcxutil
         std::vector<trimesh::vec3> newItem = m_insert->outLine();
         std::function<void(trimesh::vec3)> modelPositionUpdateFunc_nest = [this](trimesh::vec3 newBoxCenter) {
             NestResult result;
-            result.x = newBoxCenter.x;
-            result.y = newBoxCenter.y;
+            result.x = newBoxCenter.x + m_box.min.x;
+            result.y = newBoxCenter.y + m_box.min.y;
             result.r = newBoxCenter.z;
             
             m_insert->setNestResult(result);
@@ -158,8 +158,8 @@ namespace qcxutil
 
         std::function<void(int, trimesh::vec3)> modelPositionUpdateFunc_nest = [this](int modelIndex, trimesh::vec3 newBoxCenter) {
             NestResult result;
-            result.x = newBoxCenter.x;
-            result.y = newBoxCenter.y;
+            result.x = newBoxCenter.x + m_box.min.x;
+            result.y = newBoxCenter.y + m_box.min.y;
             result.r = newBoxCenter.z;
 
             m_items.at(modelIndex)->setNestResult(result);

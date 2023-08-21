@@ -3,6 +3,7 @@
 #include "qhullWrapper/hull/meshconvex.h"
 #include "polygonLib/polygonLib.h"
 #include "mmesh/util/mnode.h"
+//#include "cxutil/slicer/slicehelper.h"
 
 namespace qcxutil
 {
@@ -80,12 +81,159 @@ namespace qcxutil
     {
         return rotation;
     }
-
+#if 0
+    bool find_connet(std::vector<std::pair<int, int>>& harf_edge, std::vector<int>& poly, int cur_idx)
+    {
+        int connet_idx = -1;
+        for (int i = 0; i < harf_edge.size(); i++)
+        {
+            if (cur_idx == harf_edge[i].first)
+            {
+                connet_idx = harf_edge[i].second;
+                harf_edge[i] = std::make_pair(-1, -1);
+                break;
+            }
+            if (cur_idx == harf_edge[i].second)
+            {
+                connet_idx = harf_edge[i].first;
+                harf_edge[i] = std::make_pair(-1, -1);
+                break;
+            }
+        }
+        if (connet_idx > -1 || connet_idx == *poly.begin())
+        {
+            poly.push_back(connet_idx);
+            find_connet(harf_edge, poly, connet_idx);
+            return true;
+        }     
+        else
+           return false;
+    }
+#endif
     std::vector<trimesh::vec3> NestData::concave_path(TriMeshPtr mesh, const trimesh::vec3 scalse)
     {
+#if 0
+        auto addPoint = [](Clipper3r::Path& item, int max_dis)
+        {
+            int ptSize = item.size();
+            if (ptSize == 0) return;
+            Clipper3r::Path itemDensed;
+            itemDensed.push_back(item[0]);
+            for (int i = 1; i < ptSize + 1; i++)
+            {
+                int curIdx = i < ptSize ? i : i - ptSize;
+                Clipper3r::IntPoint ptAdd;
+                ptAdd.X = item[curIdx].X - item[i - 1].X;
+                ptAdd.Y = item[curIdx].Y - item[i - 1].Y;
+                int len = sqrt(ptAdd.X * ptAdd.X + ptAdd.Y * ptAdd.Y);
+                if (len > max_dis)
+                {
+                    int addNum = len / max_dis;
+                    for (int j = 1; j < addNum; j++)
+                    {
+                        float theta = j * max_dis / (float)len;
+
+                        Clipper3r::IntPoint pt_theta = Clipper3r::IntPoint(theta * ptAdd.X, theta * ptAdd.Y);
+                        Clipper3r::IntPoint pt_new;
+                        pt_new.X = item[i - 1].X + pt_theta.X;
+                        pt_new.Y = item[i - 1].Y + pt_theta.Y;
+                        itemDensed.push_back(pt_new);
+                    }
+                }
+                itemDensed.push_back(item[curIdx]);
+            }
+            item.swap(itemDensed);
+        };
+#endif
+        double SCALE = 1000.0;
         std::vector<trimesh::vec3> lines;
         if (mesh)
         {
+#if 0
+            cxutil::SliceHelper helper;
+            helper.prepare(mesh.get());
+
+            int face_size = helper.faces.size();
+            std::vector<bool> face_normal(face_size, false);
+            for (int i = 0; i < face_size; i++)
+            {
+                const cxutil::MeshFace& face = helper.faces[i];
+                trimesh::vec3& v0 = mesh.get()->vertices.at(face.vertex_index[0]);
+                trimesh::vec3& v1 = mesh.get()->vertices.at(face.vertex_index[1]);
+                trimesh::vec3& v2 = mesh.get()->vertices.at(face.vertex_index[2]);
+
+                trimesh::vec3 v01 = v1 - v0;
+                trimesh::vec3 v02 = v2 - v0;
+                trimesh::vec3 n = v01 TRICROSS v02;
+                trimesh::normalize(n);
+                face_normal[i] = n.z < -0.01;
+            }
+            int faceNum = 0;
+            std::vector<std::pair<int, int>> harf_edges;
+            for (int i = 0; i < face_size; i++)
+            {
+                if (!face_normal[i]) continue;
+                faceNum++;
+                const cxutil::MeshFace& face = helper.faces[i];      
+                for (int j = 0; j < 3; j++)
+                {
+                    if (face.connected_face_index[j] == -1 || !face_normal[face.connected_face_index[j]])
+                    {
+                        harf_edges.push_back(std::make_pair(face.vertex_index[j], face.vertex_index[(j + 1) % 3]));
+                    }
+                }
+            }
+
+            std::vector< std::vector<int>> polys_record;
+            while (!harf_edges.empty())
+            {         
+                std::vector<int> poly_idx_record;
+                poly_idx_record.reserve(harf_edges.size());
+                poly_idx_record.push_back(harf_edges[0].first);
+                poly_idx_record.push_back(harf_edges[0].second);
+                harf_edges[0] = std::make_pair(-1, -1);
+                find_connet(harf_edges, poly_idx_record, poly_idx_record.back());
+                polys_record.push_back(poly_idx_record);
+                std::vector<std::pair<int, int>> harf_edges_end;
+                for (const std::pair<int, int>& harf_edge : harf_edges)
+                {
+                    if (harf_edge != std::make_pair(-1, -1))
+                        harf_edges_end.push_back(harf_edge);
+                }
+                harf_edges.swap(harf_edges_end);
+            }
+
+            Clipper3r::Paths paths;
+            for (std::vector<int> poly_idx_record : polys_record)
+            {
+                Clipper3r::Path poly;
+                for (int idx : poly_idx_record)
+                {
+                    trimesh::vec3 pt_rot = rotation * mesh->vertices[idx];
+                    poly.push_back(Clipper3r::IntPoint(pt_rot.x * SCALE, pt_rot.y * SCALE));
+                }
+                if (!Clipper3r::Orientation(poly))
+                    Clipper3r::ReversePath(poly);
+                paths.push_back(poly);
+            }
+
+            Clipper3r::Clipper clipper;
+            clipper.AddPaths(paths, Clipper3r::ptSubject, true);
+            clipper.Execute(Clipper3r::ctUnion, paths, Clipper3r::pftNonZero, Clipper3r::pftNonZero);
+
+            Clipper3r::Path polys_point;
+            for (Clipper3r::Path& path: paths)
+            {
+                addPoint(path, SCALE);
+                polys_point.insert(polys_point.begin(), path.begin(), path.end());
+            }
+            polys_point = polygonLib::PolygonPro::polygonConcaveHull(polys_point);
+
+            for (const Clipper3r::IntPoint& v : polys_point)
+            {
+                lines.push_back(trimesh::vec3(v.X / SCALE * scalse.x, v.Y / SCALE * scalse.y, 0.0f));
+            }
+#else
             std::vector<polygonLib::PointF> concaveHull;
             for (const trimesh::point& pt : mesh->vertices)
             {
@@ -98,6 +246,7 @@ namespace qcxutil
             {
                 lines.push_back(trimesh::vec3(v.x * scalse.x, v.y * scalse.y, 0.0f));
             }
+#endif
         }
 
         return lines;
