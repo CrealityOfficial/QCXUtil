@@ -5,6 +5,7 @@ __cc_find(Quazip)
 __cc_find(zlib)
 __cc_find(NestPlacer)
 __cc_find(Clipper3r)
+__cc_find(Clipper)
 __cc_find(libtess2)
 
 __assert_target(qrlib)
@@ -49,7 +50,7 @@ set(SRCS qcxutil/interface.h
 		 )
 		 
 set(LIBS qtuser_core qtuser_3d Qt5::Core Qt5::Gui Qt5::3DRender Qt5::Qml qrlib trimesh2 ssl crypto
-		 quazip zlib mmesh nestplacer clipper3r libnest2d qhullWrapper libtess2 topomesh
+		 quazip zlib mmesh nestplacer clipper3r clipper libnest2d qhullWrapper libtess2 topomesh
 		)
 set(ILIBS cxnd)
 

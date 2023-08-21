@@ -8,7 +8,6 @@
 #include <QtGui/QMatrix>
 
 #include "mmesh/trimesh/algrithm3d.h"
-#include "topomesh/alg/letter.h"
 #include "clipperxyz/clipper.hpp"
 
 namespace qcxutil
@@ -16,7 +15,10 @@ namespace qcxutil
 	LetterModel::LetterModel(QObject* parent)
 		: QObject(parent)
 	{
-
+#if _DEBUG
+		m_param.cacheInput = true;
+		m_param.fileName = L"test.letter";
+#endif
 	}
 
 	LetterModel::~LetterModel()
@@ -51,12 +53,7 @@ namespace qcxutil
 		generatePolygons(surfaceSize, polygons);
 
 		bool letterOpState = false;
-		TriMeshPtr result(topomesh::letter(mesh.get(), camera, m_param, polygons, letterOpState, nullptr, tracer));
-
-		if (!letterOpState)
-		{
-			result.reset();
-		}
+		TriMeshPtr result(topomesh::letter(mesh.get(), camera, m_param, polygons, nullptr, tracer));
 
 		return result;
 	}
