@@ -14,6 +14,7 @@ __assert_target(quazip)
 __assert_target(ssl)
 __assert_target(nestplacer)
 __assert_target(clipper3r)
+__assert_target(clipper)
 __assert_target(libtess2)
 __assert_target(topomesh)
 
@@ -50,7 +51,7 @@ set(SRCS qcxutil/interface.h
 		 )
 		 
 set(LIBS qtuser_core qtuser_3d Qt5::Core Qt5::Gui Qt5::3DRender Qt5::Qml qrlib trimesh2 ssl crypto
-		 quazip zlib mmesh nestplacer clipper3r clipper libnest2d qhullWrapper libtess2 topomesh
+		 quazip zlib mmesh nestplacer clipper3r clipper libnest2d qhullWrapper libtess2 topomesh cxutil
 		)
 set(ILIBS cxnd)
 

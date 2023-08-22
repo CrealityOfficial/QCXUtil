@@ -4,7 +4,7 @@
 #include <QtCore/QObject>
 #include <memory>
 
-#include "topomesh/interface/letter.h"
+#include "topomesh/alg/letter.h"
 
 typedef std::shared_ptr<trimesh::TriMesh> TriMeshPtr;
 

@@ -3,7 +3,7 @@
 #include "qhullWrapper/hull/meshconvex.h"
 #include "polygonLib/polygonLib.h"
 #include "mmesh/util/mnode.h"
-//#include "cxutil/slicer/slicehelper.h"
+#include "cxutil/slicer/slicehelper.h"
 
 namespace qcxutil
 {
@@ -81,7 +81,7 @@ namespace qcxutil
     {
         return rotation;
     }
-#if 0
+
     bool find_connet(std::vector<std::pair<int, int>>& harf_edge, std::vector<int>& poly, int cur_idx)
     {
         int connet_idx = -1;
@@ -105,14 +105,14 @@ namespace qcxutil
             poly.push_back(connet_idx);
             find_connet(harf_edge, poly, connet_idx);
             return true;
-        }     
+
+        }
         else
-           return false;
+            return false;
     }
-#endif
+
     std::vector<trimesh::vec3> NestData::concave_path(TriMeshPtr mesh, const trimesh::vec3 scalse)
     {
-#if 0
         auto addPoint = [](Clipper3r::Path& item, int max_dis)
         {
             int ptSize = item.size();
@@ -144,12 +144,12 @@ namespace qcxutil
             }
             item.swap(itemDensed);
         };
-#endif
+
         double SCALE = 1000.0;
         std::vector<trimesh::vec3> lines;
         if (mesh)
         {
-#if 0
+#if 1
             cxutil::SliceHelper helper;
             helper.prepare(mesh.get());
 
@@ -186,7 +186,7 @@ namespace qcxutil
 
             std::vector< std::vector<int>> polys_record;
             while (!harf_edges.empty())
-            {         
+            {
                 std::vector<int> poly_idx_record;
                 poly_idx_record.reserve(harf_edges.size());
                 poly_idx_record.push_back(harf_edges[0].first);
@@ -222,6 +222,7 @@ namespace qcxutil
             clipper.Execute(Clipper3r::ctUnion, paths, Clipper3r::pftNonZero, Clipper3r::pftNonZero);
 
             Clipper3r::Path polys_point;
+
             for (Clipper3r::Path& path: paths)
             {
                 addPoint(path, SCALE);
@@ -248,7 +249,6 @@ namespace qcxutil
             }
 #endif
         }
-
         return lines;
     }
 
