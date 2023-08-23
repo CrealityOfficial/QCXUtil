@@ -8,6 +8,7 @@
 namespace qcxutil
 {
 	QCXUTIL_API void generateGeometryDataFromMesh(trimesh::TriMesh* mesh, qtuser_3d::GeometryData& data);
+	QCXUTIL_API void generateIndexGeometryDataFromMesh(trimesh::TriMesh* mesh, qtuser_3d::GeometryData& data);
 	QCXUTIL_API Qt3DRender::QGeometry* createGeometryFromMesh(trimesh::TriMesh* mesh, Qt3DCore::QNode* parent = nullptr);
 
 	QCXUTIL_API Qt3DRender::QGeometry* trimeshes2Geometry(std::vector<trimesh::TriMesh*>& meshes, int vflag = -1, Qt3DCore::QNode* parent = nullptr);

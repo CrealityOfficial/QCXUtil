@@ -6,6 +6,7 @@
 
 namespace qcxutil
 {
+	
 	void generateGeometryDataFromMesh(trimesh::TriMesh* mesh, qtuser_3d::GeometryData& data)
 	{
 		if (!mesh || (mesh->faces.size() == 0) || (mesh->vertices.size() == 0))
@@ -15,7 +16,7 @@ namespace qcxutil
 		int count = fcount * 3;
 
 		data.fcount = fcount;
-		data.count = count;
+		data.vcount = count;
 
 		QByteArray& positionByteArray = data.position;
 		QByteArray& normalByteArray = data.normal;
@@ -132,6 +133,7 @@ namespace qcxutil
 			}
 		}
 	}
+	
 
 	Qt3DRender::QGeometry* createGeometryFromMesh(trimesh::TriMesh* mesh, Qt3DCore::QNode* parent)
 	{
@@ -218,6 +220,48 @@ namespace qcxutil
 			flagAttribute = new Qt3DRender::QAttribute(flagBuffer, "vertexFlag", Qt3DRender::QAttribute::Float, 1, count);
 
 		return qtuser_3d::GeometryCreateHelper::create(parent, positionAttribute, normalAttribute, flagAttribute);
+	}
+
+	void generateIndexGeometryDataFromMesh(trimesh::TriMesh* mesh, qtuser_3d::GeometryData& data)
+	{
+		if (!mesh || (mesh->faces.size() == 0) || (mesh->vertices.size() == 0))
+			return;
+
+		int fcount = (int)mesh->faces.size();
+		int vcount = mesh->vertices.size();
+
+		data.fcount = fcount;
+		data.vcount = vcount;
+		data.indiceCount = fcount * 3;
+
+		QByteArray& positionByteArray = data.position;
+		QByteArray& indiceArray = data.indices;
+
+		positionByteArray.resize(data.vcount * 3 * sizeof(float));
+
+		indiceArray.resize(fcount * 3 * sizeof(uint));
+
+		uint* indiceData = (uint*)indiceArray.data();
+		for (int i = 0; i < fcount; ++i)
+		{
+			trimesh::TriMesh::Face& f = mesh->faces.at(i);
+			for (int j = 0; j < 3; ++j)
+			{
+				indiceData[i * 3 + j] = f[j];
+			}
+
+		}
+
+		float* vertexData = (float*)positionByteArray.data();
+		for (int i = 0; i < mesh->vertices.size(); i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				vertexData[i * 3 + j] = mesh->vertices.at(i).at(j);
+			}
+
+		}
+
 	}
 }
 
