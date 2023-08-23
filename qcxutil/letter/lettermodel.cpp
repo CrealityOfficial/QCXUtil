@@ -16,8 +16,8 @@ namespace qcxutil
 		: QObject(parent)
 	{
 #if _DEBUG
-		m_param.cacheInput = true;
-		m_param.fileName = L"test.letter";
+		//m_param.cacheInput = true;
+		//m_param.fileName = L"test.letter";
 #endif
 	}
 
