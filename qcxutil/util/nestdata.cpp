@@ -113,13 +113,14 @@ namespace qcxutil
 
     std::vector<trimesh::vec3> NestData::concave_path(TriMeshPtr mesh, const trimesh::vec3 scalse)
     {
-        auto addPoint = [](Clipper3r::Path& item, int max_dis)
+        auto addPoint = [](Clipper3r::Path& item, int max_dis, bool openPoly = false)
         {
             int ptSize = item.size();
             if (ptSize == 0) return;
             Clipper3r::Path itemDensed;
             itemDensed.push_back(item[0]);
-            for (int i = 1; i < ptSize + 1; i++)
+            int add = openPoly ? 0 : 1;
+            for (int i = 1; i < ptSize + add; i++)
             {
                 int curIdx = i < ptSize ? i : i - ptSize;
                 Clipper3r::IntPoint ptAdd;
@@ -153,6 +154,7 @@ namespace qcxutil
             cxutil::SliceHelper helper;
             helper.prepare(mesh.get());
 
+            Clipper3r::Path polys_point;
             int face_size = helper.faces.size();
             std::vector<bool> face_normal(face_size, false);
             for (int i = 0; i < face_size; i++)
@@ -183,7 +185,7 @@ namespace qcxutil
                     }
                 }
             }
-
+#if 0
             std::vector< std::vector<int>> polys_record;
             while (!harf_edges.empty())
             {
@@ -220,14 +222,24 @@ namespace qcxutil
             Clipper3r::Clipper clipper;
             clipper.AddPaths(paths, Clipper3r::ptSubject, true);
             clipper.Execute(Clipper3r::ctUnion, paths, Clipper3r::pftNonZero, Clipper3r::pftNonZero);
-
-            Clipper3r::Path polys_point;
-
+     
             for (Clipper3r::Path& path: paths)
             {
                 addPoint(path, SCALE);
                 polys_point.insert(polys_point.begin(), path.begin(), path.end());
             }
+#endif   
+            for (const std::pair<int, int>& harf_edge : harf_edges)
+            {
+                Clipper3r::Path line;
+                trimesh::vec3 p0 = rotation * mesh->vertices[harf_edge.first];
+                trimesh::vec3 p1 = rotation * mesh->vertices[harf_edge.second];
+                line.push_back(Clipper3r::IntPoint(p0.x* SCALE, p0.y* SCALE));
+                line.push_back(Clipper3r::IntPoint(p1.x* SCALE, p1.y* SCALE));
+                addPoint(line, SCALE,true);
+                polys_point.insert(polys_point.begin(), line.begin(), line.end());
+            }
+
             polys_point = polygonLib::PolygonPro::polygonConcaveHull(polys_point);
 
             for (const Clipper3r::IntPoint& v : polys_point)
