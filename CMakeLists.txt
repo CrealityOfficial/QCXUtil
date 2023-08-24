@@ -7,6 +7,7 @@ __cc_find(NestPlacer)
 __cc_find(Clipper3r)
 __cc_find(Clipper)
 __cc_find(libtess2)
+__cc_find(Boost)
 
 __assert_target(qrlib)
 __assert_target(trimesh2)
@@ -17,6 +18,7 @@ __assert_target(clipper3r)
 __assert_target(clipper)
 __assert_target(libtess2)
 __assert_target(topomesh)
+__assert_target(boost_nowide)
 
 set(SRCS qcxutil/interface.h
 		 qcxutil/qrcode/qrcode.h
@@ -51,7 +53,7 @@ set(SRCS qcxutil/interface.h
 		 )
 		 
 set(LIBS qtuser_core qtuser_3d Qt5::Core Qt5::Gui Qt5::3DRender Qt5::Qml qrlib trimesh2 ssl crypto
-		 quazip zlib mmesh nestplacer clipper3r clipper libnest2d qhullWrapper libtess2 topomesh cxutil
+		 quazip zlib mmesh nestplacer clipper3r clipper libnest2d qhullWrapper libtess2 topomesh cxutil boost_nowide
 		)
 set(ILIBS cxnd)
 
