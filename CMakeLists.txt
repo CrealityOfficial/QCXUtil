@@ -20,39 +20,9 @@ __assert_target(libtess2)
 __assert_target(topomesh)
 __assert_target(boost_nowide)
 
-set(SRCS qcxutil/interface.h
-		 qcxutil/qrcode/qrcode.h
-		 qcxutil/qrcode/qrcode.cpp
-		 qcxutil/trimesh2/conv.h
-		 qcxutil/trimesh2/conv.cpp
-		 qcxutil/trimesh2/q3drender.h
-		 qcxutil/trimesh2/q3drender.cpp
-		 qcxutil/trimesh2/cylindercreator.h
-		 qcxutil/trimesh2/cylindercreator.cpp
-		 qcxutil/xml/xmlutil.h
-		 qcxutil/xml/xmlutil.cpp
-		 qcxutil/crypt/cryptfiledevice.h
-		 qcxutil/crypt/cryptfiledevice.cpp
-		 qcxutil/quazip/quazipfile.h
-		 qcxutil/quazip/quazipfile.cpp
-		 qcxutil/xml/cxcontent.h
-		 qcxutil/xml/cxcontent.cpp
-		 qcxutil/trimesh2/trimesh2qgeometryrenderer.h
-		 qcxutil/trimesh2/trimesh2qgeometryrenderer.cpp
-		 qcxutil/util/traitsutil.h
-		 qcxutil/util/nest2djob.h
-		 qcxutil/util/nest2djob.cpp
-		 qcxutil/util/nestdata.h
-		 qcxutil/util/nestdata.cpp
-		 qcxutil/util/tessutil.h
-		 qcxutil/util/tessutil.cpp
-		 qcxutil/trimesh2/renderprimitive.h
-		 qcxutil/trimesh2/renderprimitive.cpp
-		 qcxutil/letter/lettermodel.h
-		 qcxutil/letter/lettermodel.cpp
-		 )
-		 
-set(LIBS qtuser_core qtuser_3d Qt5::Core Qt5::Gui Qt5::3DRender Qt5::Qml qrlib trimesh2 ssl crypto
+__files_group(${CMAKE_CURRENT_SOURCE_DIR}/qcxutil/ SRCS)
+		
+set(LIBS qtuser_core Qt5::Core Qt5::Gui Qt5::Qml qrlib trimesh2 ssl crypto
 		 quazip zlib mmesh nestplacer clipper3r clipper libnest2d qhullWrapper libtess2 topomesh cxutil boost_nowide
 		)
 set(ILIBS cxnd)
