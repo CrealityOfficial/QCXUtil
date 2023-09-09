@@ -5,7 +5,6 @@
 #include "trimesh2/XForm.h"
 #include "trimesh2/Box.h"
 #include "trimesh2/quaternion.h"
-#include "cxnd/struct/ray.h"
 
 #include <QtCore/QVector>
 #include <QtGui/QMatrix4x4>
