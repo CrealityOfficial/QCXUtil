@@ -130,7 +130,7 @@ namespace qcxutil
         else
             para = nestplacer::NestParaFloat(workspaceBox, m_distance, nestplacer::PlaceType(m_nestType), true, 1);
 
-        nestplacer::NestPlacer::layout_new_item(modelsData, transData, newItem, para, modelPositionUpdateFunc_nest);
+        nestplacer::layout_new_item(modelsData, transData, newItem, para, modelPositionUpdateFunc_nest);
     }
 
     void Nest2DJob::layoutAll(ccglobal::Tracer& tracer)
@@ -173,7 +173,7 @@ namespace qcxutil
         else
             para = nestplacer::NestParaFloat(workspaceBox, m_distance, nestplacer::PlaceType(m_nestType), true, 1);
 
-        nestplacer::NestPlacer::layout_all_nest(modelsData, modelIndices, para, modelPositionUpdateFunc_nest);
+        nestplacer::layout_all_nest(modelsData, modelIndices, para, modelPositionUpdateFunc_nest);
     }
 
     void Nest2DJob::beforeWork()
