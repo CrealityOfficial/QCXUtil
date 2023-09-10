@@ -1,7 +1,8 @@
 #ifndef _TESS_UTIL_H_
 #define _TESS_UTIL_H_
 #include "qcxutil/interface.h"
-#include "qcxutil/trimesh2/conv.h"
+#include "trimesh2/Vec.h"
+#include <vector>
 
 namespace qcxutil
 {
