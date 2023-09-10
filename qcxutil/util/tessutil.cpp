@@ -1,5 +1,6 @@
 #include "tessutil.h"
 #include "Include/tesselator.h"
+#include <cstring>
 
 #include "ccglobal/profile.h"
 
